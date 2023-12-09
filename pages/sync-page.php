@@ -84,31 +84,28 @@ class Storreo_Main_Table extends WP_List_Table {
         $args = array(
             'status'     => 'publish', // Only retrieve published products
             'limit'      => -1,         // Retrieve all products
-            'meta_query' => array(
-                array(
-                    'key'     => 'storeeo_watching', // Meta key to check
-                    'compare' => 'NEXISTS',        // Check if the meta key does not exist
-                ),
-            ),
         );
-    
+        
         $products = wc_get_products($args);
     
         // Extract relevant product information
         $data = array();
         foreach ($products as $product) {
-            $data[] = array(
-                'ID'         => $product->get_id(),
-                'image'      => $product->get_image(),
-                'name'       => $product->get_name(),
-                'sku'        => $product->get_sku(),
-                'stock'      => $product->get_stock_quantity(),
-                'price'      => $product->get_price(),
-                'top-sellers' => implode(', ', wp_list_pluck($product->get_category_ids(), 'name')),
-                'revenue'     => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
-                'analytics'   => "",
-                'sync'        =>"",
-            );
+            $storeeo_watching   = $product->get_meta('storeeo_watching'); 
+            if( empty( $storeeo_watching ) ) {
+                $data[] = array(
+                    'ID'         => $product->get_id(),
+                    'image'      => $product->get_image(),
+                    'name'       => $product->get_name(),
+                    'sku'        => $product->get_sku(),
+                    'stock'      => $product->get_stock_quantity(),
+                    'price'      => $product->get_price(),
+                    'top-sellers' => implode(', ', wp_list_pluck($product->get_category_ids(), 'name')),
+                    'revenue'     => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
+                    'analytics'   => "",
+                    'sync'        =>"",
+                );
+            }
         }
     
         return $data;
