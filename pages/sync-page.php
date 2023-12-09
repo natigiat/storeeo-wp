@@ -87,7 +87,7 @@ class Storreo_Main_Table extends WP_List_Table {
             'meta_query' => array(
                 array(
                     'key'     => 'storeeo_watching', // Meta key to check
-                    'compare' => 'NOT EXISTS',        // Check if the meta key does not exist
+                    'compare' => 'NEXISTS',        // Check if the meta key does not exist
                 ),
             ),
         );
