@@ -82,8 +82,14 @@ class Storreo_Main_Table extends WP_List_Table {
     // WooCommerce API function to get products
     private function get_woocommerce_products() {
         $args = array(
-            'status' => 'publish', // Only retrieve published products
-            'limit'  => -1,         // Retrieve all products
+            'status'     => 'publish', // Only retrieve published products
+            'limit'      => -1,         // Retrieve all products
+            'meta_query' => array(
+                array(
+                    'key'     => 'storeeo_watching', // Meta key to check
+                    'compare' => 'NOT EXISTS',        // Check if the meta key does not exist
+                ),
+            ),
         );
     
         $products = wc_get_products($args);
