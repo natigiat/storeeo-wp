@@ -8,7 +8,8 @@ require_once("../../../../wp-load.php");
 if (isset($_POST['product'])) {
     $product_data = $_POST['product'];
 
-    $mainImage =  rs_upload_from_url($product_data['product_images']);
+    $mainImage =  rs_upload_from_url($product_data['product_main_image']);
+  
   
 
     $product = new WC_Product_Simple();

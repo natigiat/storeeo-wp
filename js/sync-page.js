@@ -8,6 +8,7 @@ jQuery(document).ready(function ($) {
   async function addProduct(element) {
     // Get the closest 'tr' element
     var product = element.closest("tr");
+    const product_data = $(this).closest("tr").data("product");
 
     if (!product) {
       return false;
@@ -23,7 +24,7 @@ jQuery(document).ready(function ($) {
     // Prepare the data
     var data = {
       product_title: productName,
-      product_content: "test product",
+      product_content: product_data["product_content"],
       product_visibility: true,
       product_price: Number(productPrice),
       product_quantity: Number(product_quantity),

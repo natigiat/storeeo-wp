@@ -39,6 +39,7 @@ jQuery(document).ready(async function ($) {
         product: product,
       },
       success: function (response) {
+        $(".success").remove();
         item.after(`<div class="success">Product Added To Your Store</div>`);
       },
     });
