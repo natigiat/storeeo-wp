@@ -6,6 +6,8 @@
     color: #151212;
     font-weight: bold;
     cursor: pointer;
+    width: fit-content!important;
+    padding: 0px 20px!important;
 }
 /* Add your CSS styles for grid layout here */
 .grid-container {

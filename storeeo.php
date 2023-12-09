@@ -144,3 +144,33 @@ function bbloomer_admin_products_visibility_column_content( $column, $product_id
         }
     }
 }
+
+
+// The code for displaying WooCommerce Product Custom Fields
+add_action( 'woocommerce_product_options_general_product_data', 'woocommerce_product_custom_fields' ); 
+// Following code Saves  WooCommerce Product Custom Fields
+add_action( 'woocommerce_process_product_meta', 'woocommerce_product_custom_fields_save' );
+
+
+function woocommerce_product_custom_fields () {
+global $woocommerce, $post;
+echo '<div class="product_custom_field">';
+// Custom Product Text Field
+woocommerce_wp_text_input(
+    array(
+        'id' => '_custom_product_storeeo_price',
+        'class' => 'btn',
+        'label' => __('Storeeo Price', 'woocommerce'),
+        'desc_tip' => 'true'
+    )
+);
+}
+
+
+function woocommerce_product_custom_fields_save($post_id)
+{
+    // Custom Product Text Field
+    $woocommerce_custom_product_storeeo_price = $_POST['_custom_product_storeeo_price'];
+    if (!empty($woocommerce_custom_product_storeeo_price))
+        update_post_meta($post_id, '_custom_product_storeeo_price', esc_attr($woocommerce_custom_product_storeeo_price));
+}
