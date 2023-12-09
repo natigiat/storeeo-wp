@@ -20,11 +20,12 @@ jQuery(document).ready(function ($) {
     var productSku = product.find(".sku").text();
     var productImageSrc = product.find(".image img").attr("src");
     var product_quantity = product.find(".stock").text();
+    var post_content = product.find(".post_content").text();
 
     // Prepare the data
     var data = {
       product_title: productName,
-      product_content: product_data["product_content"],
+      product_content: post_content,
       product_visibility: true,
       product_price: Number(productPrice),
       product_quantity: Number(product_quantity),

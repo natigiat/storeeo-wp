@@ -33,6 +33,7 @@ class Storreo_Main_Table extends WP_List_Table {
             'revenue'       => 'Revenue',
             'analytics'       => 'Analytics',
             'sync'       => 'Sync',
+            'post_content' => 'Post Content', 
         );
     }
 
@@ -43,7 +44,7 @@ class Storreo_Main_Table extends WP_List_Table {
             'sku'  => array('sku', false),
             'stock' => array('stock', false),
             'price' => array('price', false),
-            
+        
         );
     }
 
@@ -106,6 +107,7 @@ class Storreo_Main_Table extends WP_List_Table {
                     'revenue'     => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
                     'analytics'   => "",
                     'sync'        =>"",
+                    'post_content' => $product->get_description(),
                 );
             }
         }
@@ -137,7 +139,8 @@ class Storreo_Main_Table extends WP_List_Table {
         // Debugging: Output column name and item data for debugging purposes
         // var_dump($column_name);
         // var_dump($item);
-    
+        $post_content_value = '';
+
         // Switch statement to handle different columns
         switch ($column_name) {
             case 'image':
@@ -157,17 +160,26 @@ class Storreo_Main_Table extends WP_List_Table {
                 // Output the content for 'categories' and 'tags' columns
                 return "<button class='btn'>Share</button>"; 
 
-                
+            case 'post_content':
+                $post_content_value = $item['post_content'];
+                break;
+
             default:
                 // Output the content for other columns, using esc_html to sanitize
                 return isset($item[$column_name]) ? esc_html($item[$column_name]) : '';
         }
+        $output = '<div class="hidden_data">' . $post_content_value . '</div>';
+
+        return $output;
     }
 
     // Define the checkbox column
     protected function column_cb($item) {
         return '<input type="checkbox" value="' . esc_attr($item['ID']) . '" />';
+
     }
+
+
 }
 
     // Instantiate the table class and display the table
