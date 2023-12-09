@@ -91,7 +91,9 @@ class Storreo_Main_Table extends WP_List_Table {
         // Extract relevant product information
         $data = array();
         foreach ($products as $product) {
-            $storeeo_watching   = $product->get_meta('storeeo_watching'); 
+            $storeeo_watching   = $product->get_meta('storeeo_watching');
+            $product_id = $product->get_id(); 
+            $storeeo_price =get_post_meta($product_id, "_custom_product_storeeo_price", true);
             if( empty( $storeeo_watching ) ) {
                 $data[] = array(
                     'ID'         => $product->get_id(),
@@ -99,7 +101,7 @@ class Storreo_Main_Table extends WP_List_Table {
                     'name'       => $product->get_name(),
                     'sku'        => $product->get_sku(),
                     'stock'      => $product->get_stock_quantity(),
-                    'price'      => $product->get_price(),
+                    'price'      =>  intval($storeeo_price),
                     'top-sellers' => implode(', ', wp_list_pluck($product->get_category_ids(), 'name')),
                     'revenue'     => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
                     'analytics'   => "",

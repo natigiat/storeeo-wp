@@ -164,6 +164,9 @@ woocommerce_wp_text_input(
         'desc_tip' => 'true'
     )
 );
+
+echo '</div>';
+
 }
 
 
