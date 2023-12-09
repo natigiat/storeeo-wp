@@ -1,6 +1,6 @@
 <div class="wrap">
-    <h1 class="wp-heading-inline">Storreo Main Page</h1>
-
+    <h1 class="wp-heading-inline">Share Products</h1>
+    <h4 class="">Share your Products, and get sale from another shops online</h4>
     <?php
     // Include the main class file for WP_List_Table
     // Include the main class file for WP_List_Table
@@ -150,7 +150,7 @@ class Storreo_Main_Table extends WP_List_Table {
 
             case 'sync':
                 // Output the content for 'categories' and 'tags' columns
-                return "<button>test</button>"; 
+                return "<button class='btn'>Share</button>"; 
 
                 
             default:
@@ -175,10 +175,4 @@ class Storreo_Main_Table extends WP_List_Table {
 
 
 
-<style>
-td.image.column-image img {
-    width: 45px;
-    height: 55px!important;
-    object-fit: cover;
-}
-</style>
+

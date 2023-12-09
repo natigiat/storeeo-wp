@@ -1,0 +1,115 @@
+.btn{
+    border-radius: 2px;
+    background: #eeb33e;
+    border: 1px solid #eeb33e;
+    padding: 8px;
+    color: #151212;
+    font-weight: bold;
+    cursor: pointer;
+}
+/* Add your CSS styles for grid layout here */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+}
+
+.grid-item {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+
+/* Add your CSS styles for grid layout here */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+td img {
+    width: 45px;
+    height: 55px!important;
+    object-fit: cover;
+}
+
+
+#storeeo_watching {
+    width: 100px;
+}
+#product_tag {
+    width: 56px!important;
+}
+
+.column-storeeo_watching {
+    margin-top: 10px!important;
+    display: block;
+    width: 100px;
+}
+
+.watching_btn {
+	margin: 10px;
+	height: 20px;
+	width: 20px;
+	box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+	transform: scale(1);
+	animation: pulse 2s infinite;
+	border-radius: 2px;
+	background: #eeb33e;
+	border: 1px solid #eeb33e;
+	padding: 8px;
+	color: #151212;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.success {
+    color: green;
+    font-weight: 400;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+	}
+}

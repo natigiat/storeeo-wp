@@ -1,3 +1,6 @@
+<?php
+$API_URL = "http://localhost:3001";
+?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Storreo Main Page</h1>
 
@@ -5,7 +8,7 @@
     <!-- Add Products Button -->
     <button id="addProductsButton" style="background-color: red; color: white;">Add Products From Suppliers</button>
 
-    <button class="connect">Connect Your Store</button>
+    <a target="_blank" href="http://localhost:3000" class="btn">Connect Your Store</a>
 
 
 
@@ -90,94 +93,5 @@
 </div>
 
 
-<script>
-    // Get the modal
-    var modal = document.getElementById("myModal");
-
-    // Get the button that opens the modal
-    var btn = document.getElementById("addProductsButton");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks on the button, open the modal
-    btn.onclick = function () {
-        modal.style.display = "block";
-        // You can fetch and populate the table rows dynamically here
-        // For simplicity, let's add a sample row
-        var tbody = document.querySelector('tbody');
-        tbody.innerHTML = '<tr><td>Supplier 1</td><td><img src="image.jpg" alt="Product Image"></td><td>Product 1</td><td>SKU123</td><td>50</td><td>$20</td><td>Free Shipping</td><td><button onclick="addProduct()">Add</button></td></tr>';
-    }
-
-    // When the user clicks on <span> (x), close the modal
-    function closeModal() {
-        modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    // Function to simulate adding a product (you can implement your logic here)
-    function addProduct() {
-        alert("Product added!");
-    }
-</script>
 
 
-<style>
-    .connect{
-        background: green;
-    }
-    /* Add your CSS styles for grid layout here */
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 20px;
-    }
-
-    .grid-item {
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-
-
-    /* Add your CSS styles for grid layout here */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-    }
-
-    .close {
-        color: #aaaaaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
-</style>

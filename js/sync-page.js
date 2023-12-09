@@ -1,0 +1,58 @@
+jQuery(document).ready(function ($) {
+  $(".sync").on("click", function () {
+    const element = $(this);
+    addProduct(element);
+  });
+
+  // Function to simulate adding a product (you can implement your logic here)
+  async function addProduct(element) {
+    // Get the closest 'tr' element
+    var product = element.closest("tr");
+
+    if (!product) {
+      return false;
+    }
+
+    // Get the text content using jQuery
+    var productName = product.find(".name").text();
+    var productPrice = product.find(".price").text();
+    var productSku = product.find(".sku").text();
+    var productImageSrc = product.find(".image img").attr("src");
+    var product_quantity = product.find(".stock").text();
+
+    // Prepare the data
+    var data = {
+      product_title: productName,
+      product_content: "test product",
+      product_visibility: true,
+      product_price: Number(productPrice),
+      product_quantity: Number(product_quantity),
+      product_sku: productSku,
+      product_barcode: "barcode",
+      product_main_image: productImageSrc,
+    };
+    console.log(data);
+
+    const create_record = await createRecord("products", data);
+
+    if (create_record.error) {
+      $(".error").remove();
+      element.append('<div class="error">Error upload Products</div>');
+    } else {
+      element.append(`<div class="success">Product Added</div>`);
+    }
+
+    // $.ajax({
+    //   url: url,
+    //   type: "POST",
+    //   contentType: "application/json",
+    //   data: JSON.stringify(data),
+    //   success: function (response) {
+    //     console.log(response);
+    //   },
+    //   error: function (xhr, status, error) {
+    //     console.error(error);
+    //   },
+    // });
+  }
+});

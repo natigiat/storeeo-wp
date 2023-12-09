@@ -1,7 +1,10 @@
-<div class="wrap">
-    <h1 class="wp-heading-inline">Storreo Main Page</h1>
 
-    <?php
+<div class="wrap">
+    <h1 class="wp-heading-inline">Products</h1>
+    <h4 class="">Add Products from other supplier to your store</h4>
+<?php 
+     $current_file = basename(__FILE__);
+    
     // Include the main class file for WP_List_Table
     if (!class_exists('WP_List_Table')) {
         require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
@@ -22,15 +25,16 @@
         // Define the columns for the table
         public function get_columns() {
             return array(
-                'cb'        => '<input type="checkbox" />',
-                'image'     => 'Image',
-                'name'      => 'Name',
-                'sku'       => 'SKU',
-                'stock'     => 'Stock',
-                'price'     => 'Price',
-                'categories'=> 'Categories',
-                'tags'      => 'Tags',
-                'date'      => 'Date',
+                'cb'            => '<input type="checkbox" />',
+                'image'         => 'Image',
+                'name'          => 'Name',
+                'sku'           => 'SKU',
+                'stock'         => 'Stock',
+                'price'         => 'Supplier Price',
+                'shop_seller'   => 'Shop',
+                'total_sales'   => 'Total Sales',
+                'shipping'          => 'Shipping',
+                'add'           =>  'Action',
             );
         }
     
@@ -41,7 +45,7 @@
                 'sku'       => array('sku', false),
                 'stock'     => array('stock', false),
                 'price'     => array('price', false),
-                'date'      => array('date', true),
+                'total_sales'      => array('date', true),
             );
         }
     
@@ -63,6 +67,12 @@
     
             $this->items = array_slice($data, ($current_page - 1) * $per_page, $per_page);
         }
+
+        public function set_items($data) {
+            $this->items = $data;
+            $this->prepare_items();
+        }
+
     
         // Display the table rows
         public function display_rows() {
@@ -73,10 +83,39 @@
             }
         }
     
-        // Define the default column values
+      
+
         protected function column_default($item, $column_name) {
-            return isset($item[$column_name]) ? $item[$column_name] : '';
+            // Debugging: Output column name and item data for debugging purposes
+            // var_dump($column_name);
+            // var_dump($item);
+        
+            // Switch statement to handle different columns
+            switch ($column_name) {
+                case 'image':
+                    // Output an image tag for the 'image' column
+                    return $item[$column_name];
+                case 'categories':
+                    return $item[$column_name] ? $item[$column_name] : "No Categories";
+    
+                case 'stock':
+                        return $item[$column_name] ? $item[$column_name] : "Out of stock";
+    
+                case 'tags':
+                    // Output the content for 'categories' and 'tags' columns
+                    return $item[$column_name] ? $item[$column_name] : "No Tags";
+    
+                case 'add':
+                    // Output the content for 'categories' and 'tags' columns
+                    return "<button class='btn'>Share</button>"; 
+    
+                    
+                default:
+                    // Output the content for other columns, using esc_html to sanitize
+                    return isset($item[$column_name]) ? esc_html($item[$column_name]) : '';
+            }
         }
+
     
         // Define the checkbox column
         protected function column_cb($item) {
@@ -91,3 +130,6 @@
     $table->display();
     ?>
 </div>
+
+
+
