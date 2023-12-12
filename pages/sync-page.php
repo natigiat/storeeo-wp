@@ -152,9 +152,9 @@ class Storreo_Main_Table extends WP_List_Table {
                 // Output an image tag for the 'image' column
                 return $item[$column_name];
 
-            case 'image':
+            case 'name':
                     // Output an image tag for the 'image' column
-                    return $item[$column_name];
+                    return "<a target='_blank' href='./post.php?post=".$item['id']."&action=edit'>".$item[$column_name]."</a>";
 
             case 'categories':
                 return $item[$column_name] ? $item[$column_name] : "No Categories";
