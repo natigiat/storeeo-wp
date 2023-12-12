@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-  $(".sync").on("click", function () {
+  $(".sync").on("click", "btn", function () {
     const element = $(this);
     addProduct(element);
   });

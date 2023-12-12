@@ -10,7 +10,7 @@ if (!class_exists('WP_List_Table')) {
 
 // Your main plugin class
 class Storreo_Main_Table extends WP_List_Table {
-
+    
     // Constructor
     public function __construct() {
         parent::__construct(array(
@@ -97,7 +97,7 @@ class Storreo_Main_Table extends WP_List_Table {
             $storeeo_price =get_post_meta($product_id, "_custom_product_storeeo_price", true);
             if( empty( $storeeo_watching ) ) {
                 $data[] = array(
-                    'ID'         => $product->get_id(),
+                    'id'         => $product->get_id(),
                     'image'      => $product->get_image(),
                     'name'       => $product->get_name(),
                     'sku'        => $product->get_sku(),
@@ -139,19 +139,28 @@ class Storreo_Main_Table extends WP_List_Table {
         // Debugging: Output column name and item data for debugging purposes
         // var_dump($column_name);
         // var_dump($item);
+       
         $post_content_value = '';
 
         // Switch statement to handle different columns
         switch ($column_name) {
+
+            
+
+        
             case 'image':
                 // Output an image tag for the 'image' column
                 return $item[$column_name];
+
+            case 'image':
+                    // Output an image tag for the 'image' column
+                    return $item[$column_name];
+
             case 'categories':
                 return $item[$column_name] ? $item[$column_name] : "No Categories";
 
             case 'stock':
-                
-                return $item[$column_name] ? $item[$column_name] : "Out of stock";
+                return $item[$column_name] ?  '<div class="instock">In stock</div>' : "Out of stock";
 
             case 'tags':
                 // Output the content for 'categories' and 'tags' columns
@@ -159,7 +168,7 @@ class Storreo_Main_Table extends WP_List_Table {
 
             case 'sync':
                 // Output the content for 'categories' and 'tags' columns
-                return "<button class='btn'>Share</button>"; 
+                return $item["stock"] ? "<button class='btn'>Share</button>" : "<a target='_blank' href='./post.php?post=".$item['id']."&action=edit'>Edit Product</a>"; 
 
             case 'post_content':
                 $post_content_value = $item['post_content'];
