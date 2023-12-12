@@ -101,7 +101,7 @@ class Storreo_Main_Table extends WP_List_Table {
                     'image'      => $product->get_image(),
                     'name'       => $product->get_name(),
                     'sku'        => $product->get_sku(),
-                    'stock'      => $product->get_stock_quantity(),
+                    'stock'      => $product->is_in_stock(),
                     'price'      =>  intval($storeeo_price),
                     'top-sellers' => implode(', ', wp_list_pluck($product->get_category_ids(), 'name')),
                     'revenue'     => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
@@ -150,7 +150,7 @@ class Storreo_Main_Table extends WP_List_Table {
                 return $item[$column_name] ? $item[$column_name] : "No Categories";
 
             case 'stock':
-                var_dump($item[$column_name]);    
+                
                 return $item[$column_name] ? $item[$column_name] : "Out of stock";
 
             case 'tags':
