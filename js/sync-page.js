@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-  $(".sync").on("click", "btn", function () {
+  $(".sync").on("click", ".btn", function () {
     const element = $(this);
     addProduct(element);
   });
@@ -21,14 +21,14 @@ jQuery(document).ready(function ($) {
     var productImageSrc = product.find(".image img").attr("src");
     var product_quantity = product.find(".stock").text();
     var post_content = product.find(".post_content").text();
-
+    console.log(Number(product_quantity));
     // Prepare the data
     var data = {
       product_title: productName,
       product_content: post_content,
       product_visibility: true,
       product_price: Number(productPrice),
-      product_quantity: Number(product_quantity),
+      product_quantity: Number(product_quantity) ? Number(product_quantity) : 0,
       product_sku: productSku,
       product_barcode: "barcode",
       product_main_image: productImageSrc,
