@@ -150,7 +150,8 @@ class Storreo_Main_Table extends WP_List_Table {
                 return $item[$column_name] ? $item[$column_name] : "No Categories";
 
             case 'stock':
-                    return $item[$column_name] ? $item[$column_name] : "Out of stock";
+                var_dump($item[$column_name]);    
+                return $item[$column_name] ? $item[$column_name] : "Out of stock";
 
             case 'tags':
                 // Output the content for 'categories' and 'tags' columns
