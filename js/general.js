@@ -4,7 +4,11 @@ jQuery(document).ready(function ($) {
   // Example usage:
   const user = getCookieValue("storeeo_u");
 
-  if (!user) {
+  const urlParams = new URLSearchParams(window.location.search);
+  // Get the value of a specific parameter
+  const page = urlParams.get("page");
+
+  if (!user && page.includes("storeeo")) {
     $("body").prepend(`
   ]      <div class="popover-back"></div>
          <div class="popover">

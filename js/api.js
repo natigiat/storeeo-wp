@@ -39,9 +39,17 @@ async function fetchData(url, method, data = null, auth) {
       const user = getCookieValue("storeeo_u");
       options.headers["user_token"] = user.user_token;
       if (data) {
-        const shopUrl =
+        let shopUrl =
           window.location.protocol + "//" + window.location.hostname;
+        const pathSegments = window.location.pathname
+          .split("/")
+          .filter(Boolean);
+        const firstPathSegment = pathSegments.length > 0 ? pathSegments[0] : "";
 
+        shopUrl =
+          shopUrl === "http://localhost"
+            ? shopUrl + "/" + firstPathSegment
+            : shopUrl;
         options.body = JSON.stringify({ ...data, shop_url: shopUrl });
       }
     }
