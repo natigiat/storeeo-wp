@@ -21,7 +21,15 @@ jQuery(document).ready(async function ($) {
       newRow.append(`<td>${product.product_sku}</td>`);
       newRow.append(`<td>${product.product_quantity}</td>`);
       newRow.append(`<td>${product.product_price}</td>`);
-      newRow.append(`<td>-</td>`);
+      newRow.append(
+        `<td class="flex"> ${
+          product.shop.shop_logo
+            ? `<img src=${product.shop.shop_logo} width=30 height=30/>`
+            : ""
+        }<a target="_blank" href=${product.shop.shop_url}>${
+          product.shop.shop_url
+        }</a></td>`
+      );
       newRow.append(`<td>0</td>`);
       newRow.append(`<td>No Shipping</td>`);
       newRow.append(`<td>  <button class='btn add-product'>Add</button></td>`);

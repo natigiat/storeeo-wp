@@ -159,6 +159,10 @@ th.manage-column.column-post_content {
     top: 0;
 }
 
+td.flex {
+    display: flex;
+}
+
 @keyframes pulse {
 	0% {
 		transform: scale(0.95);
