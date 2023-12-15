@@ -161,6 +161,13 @@ th.manage-column.column-post_content {
 
 td.flex {
     display: flex;
+    align-items: start;
+}
+
+.flex img {
+    width: 27px;
+    object-fit: contain;
+    height: fit-content!important;
 }
 
 @keyframes pulse {

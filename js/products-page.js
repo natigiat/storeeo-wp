@@ -23,9 +23,7 @@ jQuery(document).ready(async function ($) {
       newRow.append(`<td>${product.product_price}</td>`);
       newRow.append(
         `<td class="flex"> ${
-          product.shop.shop_logo
-            ? `<img src=${product.shop.shop_logo} width=30 height=30/>`
-            : ""
+          product.shop.shop_logo ? `<img src=${product.shop.shop_logo}/>` : ""
         }<a target="_blank" href=${product.shop.shop_url}>${
           product.shop.shop_url
         }</a></td>`
