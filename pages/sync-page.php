@@ -197,6 +197,13 @@ class Storeeo_Main_Table extends WP_List_Table {
     $table->prepare_items();
     $table->search_box('Search', 'search');
     $table->display();
+
+    $logo_id = get_theme_mod('custom_logo');
+    $logo_url = wp_get_attachment_image_src($logo_id, 'full');
+
+    if ($logo_url) {
+        echo '<input  class="shop_logo" type="hidden" data-logo="' . esc_url($logo_url[0]) . '"  />';
+    }
     ?>
 </div>
 

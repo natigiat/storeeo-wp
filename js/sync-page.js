@@ -14,6 +14,8 @@ jQuery(document).ready(function ($) {
       return false;
     }
 
+    var shop_logo = $(".shop_logo").data("logo");
+
     // Get the text content using jQuery
     var productName = product.find(".name").text();
     var productPrice = product.find(".price").text();
@@ -21,7 +23,6 @@ jQuery(document).ready(function ($) {
     var productImageSrc = product.find(".image img").attr("src");
     var product_quantity = product.find(".stock").text();
     var post_content = product.find(".post_content").text();
-    console.log(Number(product_quantity));
     // Prepare the data
     var data = {
       product_title: productName,
@@ -32,8 +33,9 @@ jQuery(document).ready(function ($) {
       product_sku: productSku,
       product_barcode: "barcode",
       product_main_image: productImageSrc,
+      shop_logo: shop_logo,
     };
-    console.log(data);
+    console.log({ data });
 
     const create_record = await createRecord("products", data);
 
