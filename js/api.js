@@ -26,10 +26,20 @@ function getCookieValue(cookieName) {
 // Function to perform a generic HTTP request
 async function fetchData(url, method, data = null, auth) {
   try {
+    let shopUrl = window.location.protocol + "//" + window.location.hostname;
+    const pathSegments = window.location.pathname.split("/").filter(Boolean);
+    const firstPathSegment = pathSegments.length > 0 ? pathSegments[0] : "";
+
+    shopUrl =
+      shopUrl === "http://localhost"
+        ? shopUrl + "/" + firstPathSegment
+        : shopUrl;
+
     const options = {
       method: method,
       headers: {
         "Content-Type": "application/json",
+        shop_url: shopUrl,
       },
       body: data ? JSON.stringify(data) : null,
     };
@@ -37,20 +47,6 @@ async function fetchData(url, method, data = null, auth) {
     if (auth) {
       const user = getCookieValue("storeeo_u");
       options.headers["user_token"] = user.user_token;
-      if (data) {
-        let shopUrl =
-          window.location.protocol + "//" + window.location.hostname;
-        const pathSegments = window.location.pathname
-          .split("/")
-          .filter(Boolean);
-        const firstPathSegment = pathSegments.length > 0 ? pathSegments[0] : "";
-
-        shopUrl =
-          shopUrl === "http://localhost"
-            ? shopUrl + "/" + firstPathSegment
-            : shopUrl;
-        options.body = JSON.stringify({ ...data, shop_url: shopUrl });
-      }
     }
 
     console.log({ options });
@@ -81,7 +77,7 @@ async function updateRecord(id, data, auth = true) {
   try {
     const url = `${API}/${id}`;
     const method = "PUT";
-    return await fetchData(url, method, data);
+    return await fetchData(url, method, data, auth);
   } catch (error) {
     console.error(`Error in updateRecord for ${API}/${id}`, error);
     throw error;
@@ -93,7 +89,7 @@ async function getRecord(route, id = null, auth = true) {
   try {
     const url = id ? `${API}/${route}/${id}` : `${API}/${route}/`;
     const method = "GET";
-    return await fetchData(url, method);
+    return await fetchData(url, method, null, auth);
   } catch (error) {
     console.error(`Error in getRecord for ${API}/${id}`, error);
     throw error;
