@@ -28,7 +28,7 @@ function storreo_plugin_menu() {
     add_menu_page('Storreo', 'Storreo', 'manage_options', 'storreo-main', 'storreo_main_page');
     add_submenu_page('storreo-main', 'Orders', 'Orders', 'manage_options', 'storreo-orders', 'storreo_orders_page');
     add_submenu_page('storreo-main', 'Products', 'Products', 'manage_options', 'storreo-products', 'storreo_products_page');
-    add_submenu_page('storreo-main', 'Share Products', 'Share Products', 'manage_options', 'storreo-sync', 'storreo_sync_page');
+    add_submenu_page('storreo-main', 'Share Products', 'Share Your Products', 'manage_options', 'storreo-sync', 'storreo_sync_page');
     add_submenu_page('storreo-main', 'Payment', 'Payment', 'manage_options', 'storreo-payment', 'storreo_payment_page');
 }
 

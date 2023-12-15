@@ -1,5 +1,5 @@
 <div class="wrap">
-    <h1 class="wp-heading-inline">Share Products</h1>
+    <h1 class="wp-heading-inline">Share Your Products</h1>
     <h4 class="">Share your Products, and get sale from another shops online</h4>
     <?php
     // Include the main class file for WP_List_Table

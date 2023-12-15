@@ -1,6 +1,4 @@
-<?php
-$API_URL = "http://localhost:3001";
-?>
+
 <div class="wrap">
     <h1 class="wp-heading-inline">Storreo Main Page</h1>
 
@@ -8,7 +6,6 @@ $API_URL = "http://localhost:3001";
     <!-- Add Products Button -->
     <button id="addProductsButton" style="background-color: red; color: white;">Add Products From Suppliers</button>
 
-    <a target="_blank" href="http://localhost:3000" class="btn">Connect Your Store</a>
 
 
 

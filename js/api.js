@@ -1,7 +1,31 @@
 const API = "http://localhost:3001";
 
+function getCookieValue(cookieName) {
+  const cookies = document.cookie.split("; ");
+
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split("=");
+    console.log({ name });
+    if (name === cookieName) {
+      // Decode the cookie value
+      const decodedValue = decodeURIComponent(value);
+
+      // Parse as JSON if it's a JSON string
+      try {
+        return JSON.parse(decodedValue);
+      } catch (error) {
+        // If parsing fails, return the decoded value as is
+        return decodedValue;
+      }
+    }
+  }
+
+  // Return null if the cookie is not found
+  return null;
+}
+
 // Function to perform a generic HTTP request
-async function fetchData(url, method, data = null) {
+async function fetchData(url, method, data = null, auth) {
   try {
     const options = {
       method: method,
@@ -10,6 +34,19 @@ async function fetchData(url, method, data = null) {
       },
       body: data ? JSON.stringify(data) : null,
     };
+
+    if (auth) {
+      const user = getCookieValue("storeeo_u");
+      options.headers["user_token"] = user.user_token;
+      if (data) {
+        const shopUrl =
+          window.location.protocol + "//" + window.location.hostname;
+
+        options.body = JSON.stringify({ ...data, shop_url: shopUrl });
+      }
+    }
+
+    console.log({ options });
 
     const response = await fetch(url, options);
     const result = await response.json();
@@ -21,11 +58,11 @@ async function fetchData(url, method, data = null) {
 }
 
 // Function to create a new record
-async function createRecord(route, data) {
+async function createRecord(route, data, auth = true) {
   try {
     const url = `${API}/${route}/`;
     const method = "POST";
-    return await fetchData(url, method, data);
+    return await fetchData(url, method, data, auth);
   } catch (error) {
     console.error(`Error in createRecord for ${API}`, error);
     throw error;
@@ -33,7 +70,7 @@ async function createRecord(route, data) {
 }
 
 // Function to update an existing record
-async function updateRecord(id, data) {
+async function updateRecord(id, data, auth = true) {
   try {
     const url = `${API}/${id}`;
     const method = "PUT";
@@ -45,7 +82,7 @@ async function updateRecord(id, data) {
 }
 
 // Function to get a record by ID
-async function getRecord(route, id = null) {
+async function getRecord(route, id = null, auth = true) {
   try {
     const url = id ? `${API}/${route}/${id}` : `${API}/${route}/`;
     const method = "GET";
@@ -57,7 +94,7 @@ async function getRecord(route, id = null) {
 }
 
 // Function to delete a record by ID
-async function deleteRecord(id) {
+async function deleteRecord(id, auth = true) {
   try {
     const url = `${API}/${id}`;
     const method = "DELETE";

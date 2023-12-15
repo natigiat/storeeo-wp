@@ -20,7 +20,9 @@ if (isset($_POST['product'])) {
     $product->set_regular_price($product_data['product_price']);
     $product->set_sold_individually( true );
     $product->set_image_id(  $mainImage );
-    $product->set_sku( !is_sku_unique($product_data['product_sku']) ?  $product_data['product_sku']+01  : $product_data['product_sku']);
+    if( $product_data['product_sku'] ) {
+        $product->set_sku(  !is_sku_unique($product_data['product_sku']) ?  $product_data['product_sku']+01  : $product_data['product_sku']);
+    }
     $product->set_manage_stock(true);
     $product->set_stock_quantity($product_data['product_quantity']);
     // $product->set_stock_status('outofstock');
