@@ -11,7 +11,7 @@
     }
 
     // Your main plugin class
-    class Storreo_Main_Table extends WP_List_Table {
+    class Storeeo_Main_Table extends WP_List_Table {
     
         // Constructor
         public function __construct() {
@@ -124,7 +124,7 @@
     }
 
     // Instantiate the table class and display the table
-    $table = new Storreo_Main_Table();
+    $table = new Storeeo_Main_Table();
     $table->prepare_items();
     $table->search_box('Search', 'search');
     $table->display();

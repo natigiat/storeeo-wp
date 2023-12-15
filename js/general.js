@@ -7,6 +7,7 @@ jQuery(document).ready(function ($) {
   const urlParams = new URLSearchParams(window.location.search);
   // Get the value of a specific parameter
   const page = urlParams.get("page");
+  console.log({ page });
 
   if (!user && page.includes("storeeo")) {
     $("body").prepend(`

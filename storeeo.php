@@ -24,46 +24,46 @@ Author: natigiat@gmail.com
 
 
 // Create the main menu and submenus
-function storreo_plugin_menu() {
-    add_menu_page('Storreo', 'Storreo', 'manage_options', 'storreo-main', 'storreo_main_page');
-    add_submenu_page('storreo-main', 'Orders', 'Orders', 'manage_options', 'storreo-orders', 'storreo_orders_page');
-    add_submenu_page('storreo-main', 'Products', 'Products', 'manage_options', 'storreo-products', 'storreo_products_page');
-    add_submenu_page('storreo-main', 'Share Products', 'Share Your Products', 'manage_options', 'storreo-sync', 'storreo_sync_page');
-    add_submenu_page('storreo-main', 'Payment', 'Payment', 'manage_options', 'storreo-payment', 'storreo_payment_page');
+function storeeo_plugin_menu() {
+    add_menu_page('Storeeo', 'Storeeo', 'manage_options', 'storeeo-main', 'storeeo_main_page');
+    add_submenu_page('storeeo-main', 'Orders', 'Orders', 'manage_options', 'storeeo-orders', 'storeeo_orders_page');
+    add_submenu_page('storeeo-main', 'Products', 'Products', 'manage_options', 'storeeo-products', 'storeeo_products_page');
+    add_submenu_page('storeeo-main', 'Share Products', 'Share Your Products', 'manage_options', 'storeeo-sync', 'storeeo_sync_page');
+    add_submenu_page('storeeo-main', 'Payment', 'Payment', 'manage_options', 'storeeo-payment', 'storeeo_payment_page');
 }
 
 // Callback for the main menu page
-function storreo_main_page() {
+function storeeo_main_page() {
     include_once(plugin_dir_path(__FILE__) . 'pages/main-page.php');
 }
 
 // Callback for the Orders submenu
-function storreo_orders_page() {
+function storeeo_orders_page() {
     include_once(plugin_dir_path(__FILE__) . 'pages/orders-page.php');
 }
 
 // Callback for the Products submenu
-function storreo_products_page() {
+function storeeo_products_page() {
     include_once(plugin_dir_path(__FILE__) . 'pages/products-page.php');
 }
 
 // Callback for the Sync submenu
-function storreo_sync_page() {
+function storeeo_sync_page() {
     include_once(plugin_dir_path(__FILE__) . 'pages/sync-page.php');
 }
 
 // Callback for the Payment submenu
-function storreo_payment_page() {
+function storeeo_payment_page() {
     include_once(plugin_dir_path(__FILE__) . 'pages/payment-page.php');
 }
 
 // Hook to add menu and submenus
-add_action('admin_menu', 'storreo_plugin_menu');
+add_action('admin_menu', 'storeeo_plugin_menu');
 
 
 
 
-function storreo_admin_styles() {
+function storeeo_admin_styles() {
     // Define a unique handle for your admin style
     $handle = 'storeeo-admin-styles';
 
@@ -103,13 +103,13 @@ function storreo_admin_styles() {
     }
 
     // Check if it's the Products page
-    if (isset($_GET['page']) && $_GET['page'] === 'storreo-products') {
+    if (isset($_GET['page']) && $_GET['page'] === 'storeeo-products') {
         wp_enqueue_script('products-page', plugin_dir_url(__FILE__) . 'js/products-page.js', array('jquery'), '1.0', true);
         wp_localize_script('products-page', 'ajax_call', array('add_product_to_store' => plugin_dir_url(__FILE__) . './includes/add_product_to_store.php'));
     }
 
     // Check if it's the Sync Page page
-    if (isset($_GET['page']) && $_GET['page'] === 'storreo-sync') {
+    if (isset($_GET['page']) && $_GET['page'] === 'storeeo-sync') {
         wp_enqueue_script('sync-page', plugin_dir_url(__FILE__) . 'js/sync-page.js', array('jquery'), null, true);
     }
 
@@ -117,7 +117,7 @@ function storreo_admin_styles() {
 }
 
 // Hook the enqueue function into the admin_enqueue_scripts action
-add_action('admin_enqueue_scripts', 'storreo_admin_styles', 999);
+add_action('admin_enqueue_scripts', 'storeeo_admin_styles', 999);
 
 
 

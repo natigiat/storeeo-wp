@@ -1,6 +1,6 @@
 
 <div class="wrap">
-    <h1 class="wp-heading-inline">Storreo Main Page</h1>
+    <h1 class="wp-heading-inline">Storeeo Main Page</h1>
 
 
     <!-- Add Products Button -->

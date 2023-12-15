@@ -5,7 +5,6 @@ function getCookieValue(cookieName) {
 
   for (const cookie of cookies) {
     const [name, value] = cookie.split("=");
-    console.log({ name });
     if (name === cookieName) {
       // Decode the cookie value
       const decodedValue = decodeURIComponent(value);
