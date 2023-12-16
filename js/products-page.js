@@ -18,15 +18,14 @@ jQuery(document).ready(async function ($) {
       newRow.append(`<td> <input type="checkbox" value="14"></td>`);
       newRow.append(`<td><img src="${product.product_main_image}" /></td>`);
       newRow.append(`<td>${product.product_title}</td>`);
-      newRow.append(`<td>${product.product_sku}</td>`);
       newRow.append(`<td>${product.product_quantity}</td>`);
+      newRow.append(`<td>${product.regular_price}</td>`);
+      newRow.append(`<td>${product.storeeo_price}</td>`);
       newRow.append(`<td>${product.product_price}</td>`);
+
       newRow.append(
-        `<td class="flex"> ${
-          product.shop.shop_logo ? `<img src=${product.shop.shop_logo}/>` : ""
-        }<a target="_blank" href=${product.shop.shop_url}>${
-          product.shop.shop_url
-        }</a></td>`
+        `<td class="flex">   
+        <img class="shop_logo" src=${product.shop.shop_logo}/><a target="_blank" href=${product.shop.shop_url}>${product.shop.shop_url}</a></td>`
       );
       newRow.append(`<td>0</td>`);
       newRow.append(`<td>No Shipping</td>`);

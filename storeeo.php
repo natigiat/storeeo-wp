@@ -111,6 +111,8 @@ function storeeo_admin_styles() {
     // Check if it's the Sync Page page
     if (isset($_GET['page']) && $_GET['page'] === 'storeeo-sync') {
         wp_enqueue_script('sync-page', plugin_dir_url(__FILE__) . 'js/sync-page.js', array('jquery'), null, true);
+        wp_localize_script('sync-page', 'ajax_call', array('change_product_sync_status' => plugin_dir_url(__FILE__) . './includes/change_product_sync_status.php'));
+
     }
 
     

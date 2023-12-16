@@ -1,8 +1,36 @@
 jQuery(document).ready(function ($) {
-  $(".sync").on("click", ".btn", function () {
+  $(".sync").on("click", ".share-product", function () {
     const element = $(this);
     addProduct(element);
   });
+
+  $(".connected-product").on("click", function () {
+    $(this).after(`
+    <div class="disable-connected-product">
+       <div class="item">Stop Sharing</div>
+    </div>
+  `);
+  });
+
+  $("body").on("click", ".disable-connected-product", function () {
+    var product_id = $(this).closest("tr").find(".product_id").text();
+    changeProductStatus(product_id, element, false);
+  });
+
+  async function changeProductStatus(product_id, element, status) {
+    $.ajax({
+      type: "POST",
+      url: ajax_call.change_product_sync_status,
+      data: {
+        product_id: product_id,
+        status: status,
+      },
+      success: function (response) {
+        $(".success").remove();
+        element.after(`<div class="success">Product Added To Your Store</div>`);
+      },
+    });
+  }
 
   // Function to simulate adding a product (you can implement your logic here)
   async function addProduct(element) {
@@ -17,12 +45,18 @@ jQuery(document).ready(function ($) {
     var shop_logo = $(".shop_logo").data("logo");
 
     // Get the text content using jQuery
+
+    var product_store_id = product.find(".product_id").text();
     var productName = product.find(".name").text();
+    var productPrice = product.find(".price").text();
     var productPrice = product.find(".price").text();
     var productSku = product.find(".sku").text();
     var productImageSrc = product.find(".image img").attr("src");
     var product_quantity = product.find(".stock").text();
     var post_content = product.find(".post_content").text();
+    var product_regular_price = product.find(".regular-price").text();
+    var product_storeeo_price = product.find(".storeeo-price").text();
+
     // Prepare the data
     var data = {
       product_title: productName,
@@ -34,8 +68,10 @@ jQuery(document).ready(function ($) {
       product_barcode: "barcode",
       product_main_image: productImageSrc,
       shop_logo: shop_logo,
+      product_store_id: Number(product_store_id),
+      product_regular_price: Number(product_regular_price),
+      product_storeeo_price: Number(product_storeeo_price),
     };
-    console.log({ data });
 
     const create_record = await createRecord("products", data);
 
@@ -43,7 +79,7 @@ jQuery(document).ready(function ($) {
       $(".error").remove();
       element.append('<div class="error">Error upload Products</div>');
     } else {
-      element.append(`<div class="success">Product Added</div>`);
+      changeProductStatus(product_store_id, element, true);
     }
 
     // $.ajax({

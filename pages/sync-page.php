@@ -28,12 +28,15 @@ class Storeeo_Main_Table extends WP_List_Table {
             'name'       => 'Name',
             'sku'        => 'SKU',
             'stock'      => 'Stock',
-            'price'      => 'Price',
+            'regular-price'     => 'Regular Price', 
+            'storeeo-price'=> 'Storeeo Price', 
+            'storeeo-discount'=> 'Discount', 
             'top-sellers' => 'Top Sellers',
-            'revenue'       => 'Revenue',
-            'analytics'       => 'Analytics',
+            'sales'       => 'Sales',
             'sync'       => 'Sync',
             'post_content' => 'Post Content', 
+            'product_id'=>'Product ID',
+            
         );
     }
 
@@ -102,12 +105,14 @@ class Storeeo_Main_Table extends WP_List_Table {
                     'name'       => $product->get_name(),
                     'sku'        => $product->get_sku(),
                     'stock'      => $product->is_in_stock(),
-                    'price'      =>  intval($storeeo_price),
+                    'regular-price'      =>  $product->get_price(),
+                    'storeeo-price'      =>  intval($storeeo_price),
+                    'storeeo-discount'=> '', 
                     'top-sellers' => implode(', ', wp_list_pluck($product->get_category_ids(), 'name')),
-                    'revenue'     => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
-                    'analytics'   => "",
+                    'sales'     => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
                     'sync'        =>"",
                     'post_content' => $product->get_description(),
+                    'product_id' => $product_id,
                 );
             }
         }
@@ -142,12 +147,12 @@ class Storeeo_Main_Table extends WP_List_Table {
        
         $post_content_value = '';
 
+        $storeeo_sync =get_post_meta($item['id'], "storeeo_sync", true);
+
+        // var_dump($storeeo_sync);
+
         // Switch statement to handle different columns
         switch ($column_name) {
-
-            
-
-        
             case 'image':
                 // Output an image tag for the 'image' column
                 return $item[$column_name];
@@ -168,7 +173,17 @@ class Storeeo_Main_Table extends WP_List_Table {
 
             case 'sync':
                 // Output the content for 'categories' and 'tags' columns
-                return $item["stock"] ? "<button class='btn'>Share</button>" : "<a target='_blank' href='./post.php?post=".$item['id']."&action=edit'>Edit Product</a>"; 
+                if($storeeo_sync  ==="true"){
+                    return "<button class='btn-green connected-product'>Connected</button>";
+                }else{
+                    return $item["stock"]  ? "<button class='btn share-product'>Share</button>" : "<a target='_blank' href='./post.php?post=".$item['id']."&action=edit'>Edit Product</a>"; 
+                }
+
+
+            case 'storeeo-discount':
+                return  number_format(($item['storeeo-price'] - $item['regular-price']) / $item['regular-price'] * 100, 2) . "%)";
+                
+
 
             case 'post_content':
                 $post_content_value = $item['post_content'];

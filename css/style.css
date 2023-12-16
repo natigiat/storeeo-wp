@@ -3,12 +3,55 @@
     background: #eeb33e;
     border: 1px solid #eeb33e;
     padding: 8px;
-    color: #151212;
-    font-weight: bold;
+    color: #fffefe;
     cursor: pointer;
     width: fit-content!important;
     padding: 0px 20px!important;
 }
+
+.btn-green{
+    border-radius: 2px;
+    background: #509b4c;
+    border: 1px solid #509b4c;
+    padding: 8px;
+    color: #fffefe;
+    cursor: pointer;
+    width: fit-content!important;
+    padding: 0px 20px!important;
+    animation: pulse 2s infinite;
+}
+
+
+.disable-connected-product {
+    background: white;
+    padding: 11px 9px;
+    border: 1px solid #cdc8c8;
+    border-radius: 5px;
+    position: absolute;
+    top: 32px;
+    font-size: 12px;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: \\;
+}
+
+td.sync.column-sync {
+    position: relative;
+}
+
+.disable-connected-product .item {
+    display: flex;
+    gap: 4px;
+    border: 1px solid #ddd3d3;
+    padding: 0px 2px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 12px;
+    padding: 5px;
+}
+
 
 .storeeo-user-wrapper {
     display: flex;
@@ -168,6 +211,7 @@ td.flex {
     width: 27px;
     object-fit: contain;
     height: fit-content!important;
+    min-width: 23px;
 }
 
 @keyframes pulse {

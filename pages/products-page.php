@@ -28,9 +28,10 @@
                 'cb'            => '<input type="checkbox" />',
                 'image'         => 'Image',
                 'name'          => 'Name',
-                'sku'           => 'SKU',
                 'stock'         => 'Stock',
-                'price'         => 'Supplier Price',
+                'regular-price' => 'Regular Price',
+                'storeeo-price'=> 'Storeeo Price', 
+                'storeeo-discount'=> 'Discount', 
                 'shop_seller'   => 'Shop',
                 'total_sales'   => 'Total Sales',
                 'shipping'          => 'Shipping',
@@ -42,7 +43,6 @@
         public function get_sortable_columns() {
             return array(
                 'name'      => array('name', true),
-                'sku'       => array('sku', false),
                 'stock'     => array('stock', false),
                 'price'     => array('price', false),
                 'total_sales'      => array('date', true),
@@ -101,9 +101,7 @@
                 case 'stock':
                         return $item[$column_name] ? $item[$column_name] : "Out of stock";
     
-                case 'tags':
-                    // Output the content for 'categories' and 'tags' columns
-                    return $item[$column_name] ? $item[$column_name] : "No Tags";
+              
     
                 case 'add':
                     // Output the content for 'categories' and 'tags' columns
