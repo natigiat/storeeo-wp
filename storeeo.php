@@ -21,7 +21,7 @@ Author: natigiat@gmail.com
  * GNU General Public License for more details.
 */
 
-
+session_start();
 
 // Create the main menu and submenus
 function storeeo_plugin_menu() {
@@ -31,6 +31,11 @@ function storeeo_plugin_menu() {
     add_submenu_page('storeeo-main', 'Share Products', 'Share Your Products', 'manage_options', 'storeeo-sync', 'storeeo_sync_page');
     add_submenu_page('storeeo-main', 'Payment', 'Payment', 'manage_options', 'storeeo-payment', 'storeeo_payment_page');
 }
+
+
+global $API;
+$API = "http://localhost:3001";
+
 
 // Callback for the main menu page
 function storeeo_main_page() {
@@ -81,6 +86,7 @@ function storeeo_admin_styles() {
 
     wp_enqueue_script('api', plugin_dir_url(__FILE__) . 'js/api.js', array('jquery'), null, true);
     wp_enqueue_script('general', plugin_dir_url(__FILE__) . 'js/general.js', array('jquery'), null, true);
+    wp_localize_script('general', 'ajax_call', array('storeUserDataToSession' => plugin_dir_url(__FILE__) . './includes/storeUserDataToSession.php'));
 
     
     $current_screen = get_current_screen();
@@ -93,7 +99,7 @@ function storeeo_admin_styles() {
     }
 
     // Check if it's the Orders page
-    if (is_page('orders')) {
+    if (isset($_GET['page']) && $_GET['page'] === 'storeeo-orders') {
         wp_enqueue_script('orders-page', plugin_dir_url(__FILE__) . 'js/orders-page.js', array('jquery'), null, true);
     }
 
@@ -111,8 +117,12 @@ function storeeo_admin_styles() {
     // Check if it's the Sync Page page
     if (isset($_GET['page']) && $_GET['page'] === 'storeeo-sync') {
         wp_enqueue_script('sync-page', plugin_dir_url(__FILE__) . 'js/sync-page.js', array('jquery'), null, true);
-        wp_localize_script('sync-page', 'ajax_call', array('change_product_sync_status' => plugin_dir_url(__FILE__) . './includes/change_product_sync_status.php'));
+        wp_localize_script('sync-page', 'ajax_call', array(
+        'change_product_sync_status' => plugin_dir_url(__FILE__) . './includes/change_product_sync_status.php' ,
+        'add_product_to_storeeo' => plugin_dir_url(__FILE__) . './includes/add_product_to_storeeo.php'
+    ));
 
+        
     }
 
     
@@ -179,3 +189,85 @@ function woocommerce_product_custom_fields_save($post_id)
     if (!empty($woocommerce_custom_product_storeeo_price))
         update_post_meta($post_id, '_custom_product_storeeo_price', esc_attr($woocommerce_custom_product_storeeo_price));
 }
+
+
+add_action('woocommerce_thankyou', function ($order_id) {
+    global $API;
+
+    $order = new WC_Order($order_id);
+
+    // Extract all properties from the Sequelize model into an associative array
+    $orderData = array(
+        'firstname' => $order->get_shipping_address_1(),
+        'lastname' => $order->get_shipping_address_2(),
+        // 'order_id' => $order->get_order_id(),
+        // 'order_items' => $order->get_order_items(),
+        // 'order_payment_id' => $order->get_order_payment_id(),
+        // 'order_shop_id' => $order->get_order_shop_id(),
+        // 'order_delivery_id' => $order->get_order_delivery_id(),
+        'first_name' => $order->get_shipping_first_name(),
+        'last_name' => $order->get_shipping_last_name(),
+        'address_1' => $order->get_shipping_address_1(),
+        'address_2' => $order->get_shipping_address_2(),
+        'city' => $order->get_shipping_city(),
+        'postcode' => $order->get_shipping_postcode(),
+        'email' => $order->get_billing_email(),  // Note: Using billing email for the example, change if needed
+        'phone' => $order->get_billing_phone(),  // Note: Using billing phone for the example, change if needed
+        'payment_method_title' => $order->get_payment_method_title(),
+        'transaction_id' => $order->get_transaction_id(),
+        'order_key' => $order->get_order_key(),
+        'amount'=> $order->get_total(),
+        // 'order_date_created' => $order->get_order_date_created(),
+        // 'order_storee_status' => $order->get_order_storee_status(),
+        // 'order_store_status' => $order->get_order_store_status(),
+    );
+
+    // echo '<pre>';
+    // var_dump($order);
+    // echo '</pre>';
+
+
+    $products_id = [];
+    $order_items = $order->get_items();
+
+    foreach ($order_items as $item_id => $item_data) {
+        $product_id= $item_data->get_product_id();
+        $storeeo_id = get_post_meta($product_id, 'storeeo__id', true);
+
+        if (!empty($storeeo_id)) {
+            $products_id[] = $storeeo_id;
+        }
+
+    }
+
+
+
+    if (isset($_SESSION['user']) && !empty($products_id)) {
+        if ($order->status != 'failed') {
+            $storedUser = unserialize($_SESSION['user']);
+            $url = $API."/orders";
+
+            $orderData['products_id'] = $products_id;
+            
+            // Define additional headers
+            $headers = array(
+                'Content-Type' => 'application/json', 
+                'user_token' => $storedUser['user_token'], 
+                'shop_url'=>home_url(),
+            );
+    
+            $response = wp_remote_post(
+                $url,
+                array(
+                    'body' => json_encode($orderData), 
+                    'headers' => $headers,
+                )
+            );
+    
+            echo '<pre>';
+            var_dump($response);
+            echo '</pre>';
+        }
+    }
+    
+});

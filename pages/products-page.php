@@ -29,6 +29,7 @@
                 'image'         => 'Image',
                 'name'          => 'Name',
                 'stock'         => 'Stock',
+                'quantity'         => 'Quantity',
                 'regular-price' => 'Regular Price',
                 'storeeo-price'=> 'Storeeo Price', 
                 'storeeo-discount'=> 'Discount', 
@@ -91,6 +92,9 @@
             // var_dump($item);
         
             // Switch statement to handle different columns
+            $storeeo_watching =get_post_meta($item['id'], "storeeo_watching", true);
+            var_dump($storeeo_watching);
+
             switch ($column_name) {
                 case 'image':
                     // Output an image tag for the 'image' column
@@ -105,8 +109,12 @@
     
                 case 'add':
                     // Output the content for 'categories' and 'tags' columns
-                    return "<button class='btn'>Share</button>"; 
-    
+                    if($storeeo_watching  ==="true"){
+                        return "<button class='connected-product'>Watching</button>";
+                    }else{
+                        return "<button class='btn'>Share</button>"; 
+                    }
+
                     
                 default:
                     // Output the content for other columns, using esc_html to sanitize

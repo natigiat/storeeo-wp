@@ -23,14 +23,15 @@
         public function get_columns() {
             return array(
                 'cb'        => '<input type="checkbox" />',
-                'image'     => 'Image',
-                'name'      => 'Name',
-                'sku'       => 'SKU',
-                'stock'     => 'Stock',
-                'price'     => 'Price',
-                'categories'=> 'Categories',
-                'tags'      => 'Tags',
-                'date'      => 'Date',
+                'order_id'           => 'Order ID',
+                'total_items'        => 'Total Items',
+                'order_items'        => 'Order Items',
+                'order_amount'       => 'Order Amount',
+                'order_delivery_id'  => 'Order Delivery ID',
+                'email'              => 'Email',
+                'phone'              => 'Phone',
+                'order_date_created' => 'Order Date Created',
+                'order_status' => 'Status',
             );
         }
     

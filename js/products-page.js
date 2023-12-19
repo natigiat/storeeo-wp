@@ -8,20 +8,36 @@ jQuery(document).ready(async function ($) {
     addProductToStore(item, product_data);
   });
 
+  $(".no-items").hide();
+
   async function getProducts() {
     const allProducts = await getRecord("products");
     const tableBody = $("#the-list");
 
     allProducts.forEach((product) => {
+      var discount_percentage =
+        ((product.product_regular_price - product.product_storeeo_price) /
+          product.product_regular_price) *
+        100;
+
       const product_data = JSON.stringify(product);
       const newRow = $(`<tr data-product='${product_data}'>`);
       newRow.append(`<td> <input type="checkbox" value="14"></td>`);
       newRow.append(`<td><img src="${product.product_main_image}" /></td>`);
       newRow.append(`<td>${product.product_title}</td>`);
-      newRow.append(`<td>${product.product_quantity}</td>`);
-      newRow.append(`<td>${product.regular_price}</td>`);
-      newRow.append(`<td>${product.storeeo_price}</td>`);
-      newRow.append(`<td>${product.product_price}</td>`);
+      newRow.append(
+        `<td>${
+          product.product_in_stock ? "<div class='green'>In Stock</div>" : "-"
+        }</td>`
+      );
+      newRow.append(
+        `<td>${product.product_quantity ? product.product_quantity : "-"}</td>`
+      );
+      newRow.append(`<td>${product.product_regular_price}</td>`);
+      newRow.append(`<td>${product.product_storeeo_price}</td>`);
+      newRow.append(
+        `<td><button>${discount_percentage.toFixed(2)}</button></td>`
+      );
 
       newRow.append(
         `<td class="flex">   

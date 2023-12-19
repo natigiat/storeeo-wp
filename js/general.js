@@ -5,9 +5,7 @@ jQuery(document).ready(function ($) {
   const user = getCookieValue("storeeo_u");
 
   const urlParams = new URLSearchParams(window.location.search);
-  // Get the value of a specific parameter
   const page = urlParams.get("page");
-  console.log({ page });
 
   if (!user && page.includes("storeeo")) {
     $("body").prepend(`
@@ -32,11 +30,26 @@ jQuery(document).ready(function ($) {
          </a>
        </div>
     `);
+  } else {
+    storeUserDataToSession(user);
+    $(".wp-heading-inline").after(`
+    <div class="storeeo-user-wrapper flex">
+      <img src=${user.photo} />
+      <div class="storeeo-name">${user.first_name}</div>
+    </div>
+  `);
   }
-  $(".wp-heading-inline").after(`
-     <div class="storeeo-user-wrapper flex">
-       <img src=${user.photo} />
-       <div class="storeeo-name">${user.first_name}</div>
-     </div>
-   `);
+
+  function storeUserDataToSession(user) {
+    $.ajax({
+      type: "POST",
+      url: ajax_call.storeUserDataToSession,
+      data: {
+        user: user,
+      },
+      success: function (response) {
+        console.log(response);
+      },
+    });
+  }
 });

@@ -16,16 +16,16 @@ if (isset($_POST['product'])) {
     $product->set_name( $product_data['product_title'] );
     $product->set_short_description( $product_data['product_content']); 
     $product->set_catalog_visibility( 'visible' );
-    $product->set_price( $product_data['product_price']);
-    $product->set_regular_price($product_data['product_price']);
+    $product->set_price( $product_data['product_storeeo_price']);
+    $product->set_regular_price($product_data['product_storeeo_price']);
     $product->set_sold_individually( true );
     $product->set_image_id(  $mainImage );
     if( $product_data['product_sku'] ) {
         $product->set_sku(  !is_sku_unique($product_data['product_sku']) ?  $product_data['product_sku']+01  : $product_data['product_sku']);
     }
     $product->set_manage_stock(true);
-    $product->set_stock_quantity($product_data['product_quantity']);
-    // $product->set_stock_status('outofstock');
+    $product->set_stock_status('instock');//outofstock
+    $product->set_stock_quantity($product_data['product_quantity']? $product_data['product_quantity'] : null);
     $product->set_downloadable( false );
     $product_id   = $product->save();
     $product->set_status('publish');

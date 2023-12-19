@@ -149,6 +149,7 @@ class Storeeo_Main_Table extends WP_List_Table {
 
         $storeeo_sync =get_post_meta($item['id'], "storeeo_sync", true);
 
+        $storeeo_discount = number_format(($item['regular-price'] - $item['storeeo-price']) / $item['regular-price'] * 100, 2) . "%";
         // var_dump($storeeo_sync);
 
         // Switch statement to handle different columns
@@ -181,7 +182,8 @@ class Storeeo_Main_Table extends WP_List_Table {
 
 
             case 'storeeo-discount':
-                return  number_format(($item['storeeo-price'] - $item['regular-price']) / $item['regular-price'] * 100, 2) . "%)";
+                return "<button class='storeeo-discount'>$storeeo_discount</button>";
+ 
                 
 
 
