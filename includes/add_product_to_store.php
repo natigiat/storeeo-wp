@@ -7,17 +7,18 @@ require_once("../../../../wp-load.php");
 // Check if the 'product' key exists in the $_POST array
 if (isset($_POST['product'])) {
     $product_data = $_POST['product'];
-
+    $store_price = $_POST['store_price'];
+ 
     $mainImage =  rs_upload_from_url($product_data['product_main_image']);
   
-  
+
 
     $product = new WC_Product_Simple();
     $product->set_name( $product_data['product_title'] );
     $product->set_short_description( $product_data['product_content']); 
     $product->set_catalog_visibility( 'visible' );
-    $product->set_price( $product_data['product_storeeo_price']);
-    $product->set_regular_price($product_data['product_storeeo_price']);
+    $product->set_price( $store_price);
+    $product->set_regular_price($store_price);
     $product->set_sold_individually( true );
     $product->set_image_id(  $mainImage );
     if( $product_data['product_sku'] ) {
@@ -33,6 +34,7 @@ if (isset($_POST['product'])) {
 
     update_post_meta( $product_id, 'storeeo_watching', 'true' );
     update_post_meta( $product_id, 'storeeo__id', $product_data['product_id'] );
+    update_post_meta( $product_id, '_custom_product_storeeo_price', $product_data['product_storeeo_price'] );
 
 
 

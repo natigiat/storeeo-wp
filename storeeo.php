@@ -36,6 +36,7 @@ function storeeo_plugin_menu() {
 global $API;
 $API = "http://localhost:3001";
 
+include_once(plugin_dir_path(__FILE__) . 'includes/products.php');
 
 // Callback for the main menu page
 function storeeo_main_page() {
@@ -271,3 +272,19 @@ add_action('woocommerce_thankyou', function ($order_id) {
     }
     
 });
+
+
+
+add_action('save_post', 'update_product_on_storion');
+
+function update_product_on_storion($post_id) {
+    if ('product' === get_post_type($post_id)) {
+        // Get the product object
+        $product = wc_get_product($post_id);
+        if ($product) {
+            add_product_to_storeeo_function($product);
+        }
+    }
+    
+}
+

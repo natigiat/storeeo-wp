@@ -24,6 +24,7 @@ class Storeeo_Main_Table extends WP_List_Table {
     public function get_columns() {
         return array(
             'cb'         => '<input type="checkbox" />',
+            'storeeo_sync_id' =>'Storeeo Id',
             'image'      => 'Image',
             'name'       => 'Name',
             'sku'        => 'SKU',
@@ -36,6 +37,7 @@ class Storeeo_Main_Table extends WP_List_Table {
             'sync'       => 'Sync',
             'post_content' => 'Post Content', 
             'product_id'=>'Product ID',
+           
             
         );
     }
@@ -94,27 +96,53 @@ class Storeeo_Main_Table extends WP_List_Table {
     
         // Extract relevant product information
         $data = array();
+
+
         foreach ($products as $product) {
+
+
+
             $storeeo_watching   = $product->get_meta('storeeo_watching');
             $product_id = $product->get_id(); 
             $storeeo_price =get_post_meta($product_id, "_custom_product_storeeo_price", true);
-            if( empty( $storeeo_watching ) ) {
+            if (empty($storeeo_watching)) {
+                $regular_price = $product->get_price(); // Default to the product price
+            
+                // Check if the product has variations
+                if ($product->is_type('variable')) {
+                    $variations = $product->get_available_variations();
+            
+                    if (!empty($variations)) {
+                        // Use the price of the first variation as the regular price
+                        $first_variation = reset($variations);
+                        $regular_price = $first_variation['display_price'];
+                    }
+                }
+
+            
+                $storeeo_discount = '';
+            
+                if ($regular_price > 0) {
+                    $storeeo_discount = number_format(($regular_price - $storeeo_price) / $regular_price * 100, 2) . "%";
+                }
+            
                 $data[] = array(
-                    'id'         => $product->get_id(),
-                    'image'      => $product->get_image(),
-                    'name'       => $product->get_name(),
-                    'sku'        => $product->get_sku(),
-                    'stock'      => $product->is_in_stock(),
-                    'regular-price'      =>  $product->get_price(),
-                    'storeeo-price'      =>  intval($storeeo_price),
-                    'storeeo-discount'=> '', 
+                    'id' => $product->get_id(),
+                    'image' => $product->get_image(),
+                    'name' => $product->get_name(),
+                    'sku' => $product->get_sku(),
+                    'stock' => $product->is_in_stock(),
+                    'regular-price' => $regular_price,
+                    'storeeo-price' => $storeeo_price,
+                    'storeeo-discount' => $storeeo_discount,
                     'top-sellers' => implode(', ', wp_list_pluck($product->get_category_ids(), 'name')),
-                    'sales'     => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
-                    'sync'        =>"",
+                    'sales' => implode(', ', wp_list_pluck($product->get_tag_ids(), 'name')),
+                    'sync' => "",
                     'post_content' => $product->get_description(),
                     'product_id' => $product_id,
                 );
             }
+            
         }
     
         return $data;
@@ -148,9 +176,18 @@ class Storeeo_Main_Table extends WP_List_Table {
         $post_content_value = '';
 
         $storeeo_sync =get_post_meta($item['id'], "storeeo_sync", true);
+        $storeeo_sync_id =get_post_meta($item['id'], "storeeo_sync_id", true);
 
-        $storeeo_discount = number_format(($item['regular-price'] - $item['storeeo-price']) / $item['regular-price'] * 100, 2) . "%";
-        // var_dump($storeeo_sync);
+        
+        $regular_price = floatval($item['regular-price']);
+        $storeeo_price = floatval($item['storeeo-price']);
+        
+        // Check if the values are numeric before performing the calculation
+        if (is_numeric($regular_price) && is_numeric($storeeo_price) && $regular_price > 0) {
+            $storeeo_discount = number_format(($regular_price - $storeeo_price) / $regular_price * 100, 2) . "%";
+        } else {
+            $storeeo_discount = 'Invalid input values'; // or handle the situation accordingly
+        }        // var_dump($storeeo_sync);
 
         // Switch statement to handle different columns
         switch ($column_name) {
@@ -175,7 +212,7 @@ class Storeeo_Main_Table extends WP_List_Table {
             case 'sync':
                 // Output the content for 'categories' and 'tags' columns
                 if($storeeo_sync  ==="true"){
-                    return "<button class='btn-green connected-product'>Connected</button>";
+                    return "<button class='btn btn-green connected-product'>Connected</button>";
                 }else{
                     return $item["stock"]  ? "<button class='btn share-product'>Share</button>" : "<a target='_blank' href='./post.php?post=".$item['id']."&action=edit'>Edit Product</a>"; 
                 }
@@ -183,7 +220,11 @@ class Storeeo_Main_Table extends WP_List_Table {
 
             case 'storeeo-discount':
                 return "<button class='storeeo-discount'>$storeeo_discount</button>";
- 
+
+            
+            case 'storeeo_sync_id':
+                return "<div class='storeeo-sync-id'>$storeeo_sync_id</div>";
+                
                 
 
 

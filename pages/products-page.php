@@ -33,6 +33,7 @@
                 'regular-price' => 'Regular Price',
                 'storeeo-price'=> 'Storeeo Price', 
                 'storeeo-discount'=> 'Discount', 
+                'your-price'=> 'Your Price', 
                 'shop_seller'   => 'Shop',
                 'total_sales'   => 'Total Sales',
                 'shipping'          => 'Shipping',
@@ -93,7 +94,7 @@
         
             // Switch statement to handle different columns
             $storeeo_watching =get_post_meta($item['id'], "storeeo_watching", true);
-            var_dump($storeeo_watching);
+         
 
             switch ($column_name) {
                 case 'image':
@@ -115,6 +116,9 @@
                         return "<button class='btn'>Share</button>"; 
                     }
 
+
+                case 'your-price':
+                        return "woo";
                     
                 default:
                     // Output the content for other columns, using esc_html to sanitize

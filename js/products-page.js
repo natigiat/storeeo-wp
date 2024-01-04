@@ -5,7 +5,12 @@ jQuery(document).ready(async function ($) {
   $("body").on("click", ".add-product", function (e) {
     const item = $(this);
     const product_data = $(this).closest("tr").data("product");
-    addProductToStore(item, product_data);
+    const store_price = $(this).closest("tr").find(".store_price").val();
+    if (!store_price) {
+      $(this).after("<div class='error'>Please set your price</div>");
+    } else {
+      addProductToStore(item, product_data, store_price);
+    }
   });
 
   $(".no-items").hide();
@@ -38,10 +43,12 @@ jQuery(document).ready(async function ($) {
       newRow.append(
         `<td><button>${discount_percentage.toFixed(2)}</button></td>`
       );
-
+      newRow.append(
+        `<td><input type="number" class="store_price" placeholder="set your price"></input></td>`
+      );
       newRow.append(
         `<td class="flex">   
-        <img class="shop_logo" src=${product.shop.shop_logo}/><a target="_blank" href=${product.shop.shop_url}>${product.shop.shop_url}</a></td>`
+       <a target="_blank" href=${product.shop.shop_url}> <img class="shop_logo" src=${product.shop.shop_logo}/></a></td>`
       );
       newRow.append(`<td>0</td>`);
       newRow.append(`<td>No Shipping</td>`);
@@ -50,7 +57,7 @@ jQuery(document).ready(async function ($) {
     });
   }
 
-  async function addProductToStore(item, product) {
+  async function addProductToStore(item, product, store_price) {
     console.log({ product });
 
     $.ajax({
@@ -58,6 +65,7 @@ jQuery(document).ready(async function ($) {
       url: ajax_call.add_product_to_store,
       data: {
         product: product,
+        store_price: store_price,
       },
       success: function (response) {
         $(".success").remove();

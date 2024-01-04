@@ -4,7 +4,7 @@ jQuery(document).ready(function ($) {
     addProduct(element);
   });
 
-  $(".connected-product").on("click", function () {
+  $("body").on("click", ".connected-product", function () {
     $(this).after(`
     <div class="disable-connected-product">
        <div class="item">Stop Sharing</div>
@@ -15,20 +15,40 @@ jQuery(document).ready(function ($) {
   $("body").on("click", ".disable-connected-product", function () {
     const element = $(this);
     const product_id = $(this).closest("tr").find(".product_id").text();
-    changeProductStatus(product_id, element, false);
+    const storeeo_sync_id = $(this)
+      .closest("tr")
+      .find(".storeeo-sync-id")
+      .text();
+    changeProductStatus(product_id, storeeo_sync_id, element, false);
   });
 
-  async function changeProductStatus(product_id, element, status) {
+  async function changeProductStatus(
+    product_id,
+    storeeo_sync_id = false,
+    element,
+    status
+  ) {
     $.ajax({
       type: "POST",
       url: ajax_call.change_product_sync_status,
       data: {
         product_id: product_id,
+        storeeo_sync_id: storeeo_sync_id,
         status: status,
       },
       success: function (response) {
-        $(".success").remove();
-        element.after(`<div class="success">Product Added To Your Store</div>`);
+        console.log({ response });
+        const item = element.closest(".sync").find(".btn");
+        if (response === "success") {
+          item.removeClass("share-product");
+          item.addClass("connected-product ,  btn-green");
+          item.text("Connected");
+        } else {
+          item.removeClass("connected-product ,  btn-green");
+          item.addClass("share-product");
+          $(".disable-connected-product").remove();
+          item.text("Share");
+        }
       },
     });
   }
@@ -42,7 +62,6 @@ jQuery(document).ready(function ($) {
     if (!product) {
       return false;
     }
-    //   changeProductStatus(product_store_id, element, true);
 
     $.ajax({
       type: "POST",
@@ -51,8 +70,8 @@ jQuery(document).ready(function ($) {
         product_store_id: product_store_id,
       },
       success: function (response) {
-        $(".success").remove();
-        item.after(`<div class="success">Product Added To Your Store</div>`);
+        const storeeo_sync_id = Number(response);
+        changeProductStatus(product_store_id, storeeo_sync_id, element, true);
       },
     });
   }
