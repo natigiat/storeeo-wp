@@ -2,10 +2,10 @@ jQuery(document).ready(async function ($) {
   getOrders();
 
   // add product onClick
-  $("body").on("click", ".add-product", function (e) {
+  $("body").on("click", ".pay-to-shop", function (e) {
     const item = $(this);
     const product_data = $(this).closest("tr").data("product");
-    addProductToStore(item, product_data);
+    payToShop(item, product_data);
   });
 
   $(".no-items").hide();
@@ -20,46 +20,73 @@ jQuery(document).ready(async function ($) {
       const newRow = $(`<tr data-product='${product_data}'>`);
       newRow.append(`<td> <input type="checkbox" value="14"></td>`);
       newRow.append(`<td>${product.order_key ? product.order_key : "-"}</td>`);
-      newRow.append(`<td>${product.orderProducts.length}</td>`);
-      newRow.append(
-        `<td>
-      ` +
-          product.orderProducts?.map((product) => {
-            return `
-            <div class="flex order-products">
-               <img src=${product.product.product_main_image} />
-               </div>`;
-          }) +
-          `
-      </td>`
-      );
+      newRow.append(`<td>${product.amount ? product.amount : "-"}</td>`);
+
+      let totalAmount = 0;
+      product.orderProducts.forEach((product) => {
+        const price = parseFloat(product.product.product_storeeo_price);
+        if (!isNaN(price)) {
+          totalAmount += price;
+        }
+      });
+
+      totalAmount =
+        totalAmount !== 0 ? totalAmount.toFixed(2).replace(/^0+/, "") : "-";
+
+      newRow.append(`<td>${totalAmount}</td>`);
+      newRow.append(`<td class="profit">${product.amount - totalAmount}</td>`);
+      newRow.append(`
+      <td class="flex order-products">
+        ${product.orderProducts
+          ?.map(
+            (product) => `
+          <img src=${product.product.product_main_image} />
+        `
+          )
+          .join("")}
+      <div class="order-items-length">(${
+        product.orderProducts.length
+      } items)</div></td>`);
 
       newRow.append(
-        `<td>${
-          product.order_date_created ? product.order_date_created : "-"
+        `<td class="user_info link">${
+          product.first_name + " " + product.last_name
         }</td>`
       );
       newRow.append(
-        `<td>${
-          product.order_storee_status ? product.order_storee_status : "-"
-        }</td>`
+        `<td><a class="link" href="tel:${product.phone}">${
+          product.phone ? product.phone : "-"
+        }</a></td>`
       );
 
-      newRow.append(`<td>${product.phone}</td>`);
+      const options = {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "UTC",
+      };
 
-      newRow.append(`<td>${product.email}</td>`);
-      newRow.append(`<td>No Shipping</td>`);
-      newRow.append(`<td>  <button class='btn add-product'>Add</button></td>`);
+      const originalDate = new Date(product.createdAt);
+      let formattedDate = originalDate.toLocaleString("en-GB", options);
+      formattedDate = formattedDate.replace(",", " -");
+      newRow.append(`<td>${formattedDate}</td>`);
+
+      newRow.append(`<td> <button class=''>order created</button></td>`);
+      newRow.append(
+        `<td>  <button class='btn pay-to-shop'>pay the supplier</button></td>`
+      );
       tableBody.append(newRow);
     });
   }
 
-  async function addProductToStore(item, product) {
+  async function payToShop(item, product) {
     console.log({ product });
 
     $.ajax({
       type: "POST",
-      url: ajax_call.add_product_to_store,
+      url: ajax_call.send_payment_to_supllier,
       data: {
         product: product,
       },

@@ -102,6 +102,7 @@ function storeeo_admin_styles() {
     // Check if it's the Orders page
     if (isset($_GET['page']) && $_GET['page'] === 'storeeo-orders') {
         wp_enqueue_script('orders-page', plugin_dir_url(__FILE__) . 'js/orders-page.js', array('jquery'), null, true);
+        wp_localize_script('orders-page', 'ajax_call', array('send_payment_to_supllier' => plugin_dir_url(__FILE__) . './includes/send_payment_to_supllier.php') );
     }
 
     // Check if it's the Payment page
@@ -139,6 +140,8 @@ add_filter( 'manage_edit-product_columns', 'bbloomer_admin_products_visibility_c
  
 function bbloomer_admin_products_visibility_column( $columns ){
    $columns['storeeo_watching'] = '<span class="manage-column column-product_tag">Storeeo</span>';
+   $columns['storeeo_sells'] = '<span class="manage-column column-product_tag">Storeeo Sells</span>';
+   $columns['storeeo_messages'] = '<span class="manage-column column-product_tag">Storeeo Messages</span>';
    return $columns;
 }
 
@@ -146,16 +149,47 @@ function bbloomer_admin_products_visibility_column( $columns ){
 add_action( 'manage_product_posts_custom_column', 'bbloomer_admin_products_visibility_column_content', 10, 2 );
 
 function bbloomer_admin_products_visibility_column_content( $column, $product_id ) {
+    $is_watching = get_post_meta( $product_id, 'storeeo_watching', true );
     if ( $column == 'storeeo_watching' ) {
-        $is_watching = get_post_meta( $product_id, 'storeeo_watching', true );
-
+        
+        $storeeo__id = get_post_meta( $product_id, 'storeeo__id', true );
+        
         // Check if the product is marked as watching
         if ( $is_watching === 'true' ) {
-            echo '<span class="watching_btn">Watching</span>';
+            echo '<span class="watching_btn" data-id="'.$storeeo__id.'" >Watching</span>';
         } else {
             echo '-';
         }
     }
+
+    if ( $column == 'storeeo_sells' ) {
+        $storee_sells_count= false;
+
+        if ( $is_watching !== 'true' ) {
+             echo '-';
+        }else{
+            if ( $storee_sells_count ) {
+                echo '<span class="watching_btn" data-id="'.$storeeo__id.'" >Watching</span>';
+            } else {
+                echo '0';
+            }
+        }
+        
+    }
+
+    if ( $column == 'storeeo_messages' ) {
+        $storee_sells_count= false;
+        if ( $is_watching !== 'true' ) {
+            echo '-';
+       }else{
+           if ( $storee_sells_count ) {
+               echo '<span class="watching_btn" data-id="'.$storeeo__id.'" >Watching</span>';
+           } else {
+               echo '0';
+           }
+       }
+    }
+
 }
 
 
@@ -201,11 +235,6 @@ add_action('woocommerce_thankyou', function ($order_id) {
     $orderData = array(
         'firstname' => $order->get_shipping_address_1(),
         'lastname' => $order->get_shipping_address_2(),
-        // 'order_id' => $order->get_order_id(),
-        // 'order_items' => $order->get_order_items(),
-        // 'order_payment_id' => $order->get_order_payment_id(),
-        // 'order_shop_id' => $order->get_order_shop_id(),
-        // 'order_delivery_id' => $order->get_order_delivery_id(),
         'first_name' => $order->get_shipping_first_name(),
         'last_name' => $order->get_shipping_last_name(),
         'address_1' => $order->get_shipping_address_1(),
@@ -216,11 +245,8 @@ add_action('woocommerce_thankyou', function ($order_id) {
         'phone' => $order->get_billing_phone(),  // Note: Using billing phone for the example, change if needed
         'payment_method_title' => $order->get_payment_method_title(),
         'transaction_id' => $order->get_transaction_id(),
+        'amount' => floatval($order->get_total()),
         'order_key' => $order->get_order_key(),
-        'amount'=> $order->get_total(),
-        // 'order_date_created' => $order->get_order_date_created(),
-        // 'order_storee_status' => $order->get_order_storee_status(),
-        // 'order_store_status' => $order->get_order_store_status(),
     );
 
     // echo '<pre>';

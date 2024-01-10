@@ -4,11 +4,23 @@ jQuery(document).ready(async function ($) {
   //add product onClick
   $("body").on("click", ".add-product", function (e) {
     const item = $(this);
+    $(".error").remove();
     const product_data = $(this).closest("tr").data("product");
-    const store_price = $(this).closest("tr").find(".store_price").val();
+    const store_price = Number(
+      $(this).closest("tr").find(".store_price").val()
+    );
+    const storeeo_price = Number(
+      $(this).closest("tr").find(".storeeo_price").text()
+    );
+
     if (!store_price) {
       $(this).after("<div class='error'>Please set your price</div>");
+    } else if (store_price && store_price < storeeo_price) {
+      $(this).after(
+        "<div class='error'>Your price must be greater than storeeo price</div>"
+      );
     } else {
+      // console.log("adding");
       addProductToStore(item, product_data, store_price);
     }
   });
@@ -38,10 +50,14 @@ jQuery(document).ready(async function ($) {
       newRow.append(
         `<td>${product.product_quantity ? product.product_quantity : "-"}</td>`
       );
-      newRow.append(`<td>${product.product_regular_price}</td>`);
-      newRow.append(`<td>${product.product_storeeo_price}</td>`);
       newRow.append(
-        `<td><button>${discount_percentage.toFixed(2)}</button></td>`
+        `<td class="regular_price">${product.product_regular_price}</td>`
+      );
+      newRow.append(
+        `<td class="storeeo_price">${product.product_storeeo_price}</td>`
+      );
+      newRow.append(
+        `<td><button>%${discount_percentage.toFixed(2)}</button></td>`
       );
       newRow.append(
         `<td><input type="number" class="store_price" placeholder="set your price"></input></td>`

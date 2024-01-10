@@ -24,9 +24,15 @@ if (isset($_POST['product'])) {
     if( $product_data['product_sku'] ) {
         $product->set_sku(  !is_sku_unique($product_data['product_sku']) ?  $product_data['product_sku']+01  : $product_data['product_sku']);
     }
-    $product->set_manage_stock(true);
-    $product->set_stock_status('instock');//outofstock
-    $product->set_stock_quantity($product_data['product_quantity']? $product_data['product_quantity'] : null);
+ 
+    if($product_data['product_quantity'] > 0){
+        $product->set_manage_stock(true);
+        $product->set_stock_quantity($product_data['product_quantity']? $product_data['product_quantity'] : null);
+    }else{
+        $product->set_stock_status('instock');
+    }
+ 
+   
     $product->set_downloadable( false );
     $product_id   = $product->save();
     $product->set_status('publish');

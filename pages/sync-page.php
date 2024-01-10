@@ -184,7 +184,7 @@ class Storeeo_Main_Table extends WP_List_Table {
         
         // Check if the values are numeric before performing the calculation
         if (is_numeric($regular_price) && is_numeric($storeeo_price) && $regular_price > 0) {
-            $storeeo_discount = number_format(($regular_price - $storeeo_price) / $regular_price * 100, 2) . "%";
+            $storeeo_discount =  "%" .number_format(($regular_price - $storeeo_price) / $regular_price * 100, 2);
         } else {
             $storeeo_discount = 'Invalid input values'; // or handle the situation accordingly
         }        // var_dump($storeeo_sync);

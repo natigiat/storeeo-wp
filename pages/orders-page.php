@@ -24,14 +24,15 @@
             return array(
                 'cb'        => '<input type="checkbox" />',
                 'order_id'           => 'Order ID',
-                'total_items'        => 'Total Items',
+                'order_amount'          => 'Order Amount',
+                'order_product_prices'  => 'Supplier Price',
+                'order_your_profit'     => 'Order Profit',
                 'order_items'        => 'Order Items',
-                'order_amount'       => 'Order Amount',
-                'order_delivery_id'  => 'Order Delivery ID',
-                'email'              => 'Email',
+                'order_user_info'    => 'User Info',
                 'phone'              => 'Phone',
                 'order_date_created' => 'Order Date Created',
-                'order_status' => 'Status',
+                'order_status'       => 'Order Status',
+                'order_action' => 'Action',
             );
         }
     

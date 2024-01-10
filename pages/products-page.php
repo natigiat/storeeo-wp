@@ -116,9 +116,6 @@
                         return "<button class='btn'>Share</button>"; 
                     }
 
-
-                case 'your-price':
-                        return "woo";
                     
                 default:
                     // Output the content for other columns, using esc_html to sanitize
