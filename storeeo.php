@@ -2,23 +2,9 @@
 /*
 Plugin Name: Storeeo
 Description: Share Products betweern woocomerce stores.
-Version: 1.0
+Version: 1.0.0
 Author: natigiat@gmail.com
-
- * Text Domain: elementor
- *
- * @package Elementor
- * @category Core
- *
- * Elementor is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * Elementor is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+License: GPLv2 or later
 */
 
 session_start();
@@ -29,7 +15,6 @@ function storeeo_plugin_menu() {
     add_submenu_page('storeeo-main', 'Orders', 'Orders', 'manage_options', 'storeeo-orders', 'storeeo_orders_page');
     add_submenu_page('storeeo-main', 'Products', 'Products', 'manage_options', 'storeeo-products', 'storeeo_products_page');
     add_submenu_page('storeeo-main', 'Share Products', 'Share Your Products', 'manage_options', 'storeeo-sync', 'storeeo_sync_page');
-    add_submenu_page('storeeo-main', 'Payment', 'Payment', 'manage_options', 'storeeo-payment', 'storeeo_payment_page');
 }
 
 
@@ -58,10 +43,6 @@ function storeeo_sync_page() {
     include_once(plugin_dir_path(__FILE__) . 'pages/sync-page.php');
 }
 
-// Callback for the Payment submenu
-function storeeo_payment_page() {
-    include_once(plugin_dir_path(__FILE__) . 'pages/payment-page.php');
-}
 
 // Hook to add menu and submenus
 add_action('admin_menu', 'storeeo_plugin_menu');
@@ -102,7 +83,6 @@ function storeeo_admin_styles() {
     // Check if it's the Orders page
     if (isset($_GET['page']) && $_GET['page'] === 'storeeo-orders') {
         wp_enqueue_script('orders-page', plugin_dir_url(__FILE__) . 'js/orders-page.js', array('jquery'), null, true);
-        wp_localize_script('orders-page', 'ajax_call', array('send_payment_to_supllier' => plugin_dir_url(__FILE__) . './includes/send_payment_to_supllier.php') );
     }
 
     // Check if it's the Payment page
@@ -314,3 +294,50 @@ function update_product_on_storion($post_id) {
     
 }
 
+
+
+
+
+
+function custom_cart_init_actions() {
+    // Check if it's the cart page
+    if (is_cart()) {
+
+        $product_data = isset($_GET['pid']) ? json_decode($_GET['pid'], true) : [];
+
+        $storeeo_checkout = isset($_GET['storeeo_checkout']) ? $_GET['storeeo_checkout'] : false;
+
+        if ($storeeo_checkout) {
+            WC()->cart->empty_cart();
+
+            foreach ($product_data as $product_id => $quantity) {
+                // wp wc change price before adding to cart
+                $storreo_price = get_post_meta($product_id, "_custom_product_storeeo_price", true);
+
+                WC()->cart->add_to_cart($product_id, $quantity, 0, array(), array('storeeo_price' => $storreo_price));
+                WC()->cart->set_session();
+            }
+
+            wp_redirect(wc_get_checkout_url());
+        }
+
+    }
+}
+
+add_action('wp', 'custom_cart_init_actions');
+
+
+
+add_action( 'woocommerce_before_calculate_totals', 'rudr_custom_price_refresh' );
+
+function rudr_custom_price_refresh( $cart_object ) {
+
+	foreach ( $cart_object->get_cart() as $item ) {
+
+		if( array_key_exists( 'storeeo_price', $item ) ) {
+			$item[ 'data' ]->set_price( $item[ 'storeeo_price' ] );
+		}
+      
+	}
+	
+}

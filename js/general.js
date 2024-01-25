@@ -47,9 +47,9 @@ jQuery(document).ready(function ($) {
       data: {
         user: user,
       },
-      success: function (response) {
-        console.log(response);
-      },
+      success: function (response) {},
     });
   }
+
+  // on click popover-close remove popover
 });

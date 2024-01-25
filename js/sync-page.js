@@ -37,7 +37,6 @@ jQuery(document).ready(function ($) {
         status: status,
       },
       success: function (response) {
-        console.log({ response });
         const item = element.closest(".sync").find(".btn");
         if (response === "success") {
           item.removeClass("share-product");

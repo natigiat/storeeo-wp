@@ -49,8 +49,6 @@ async function fetchData(url, method, data = null, auth) {
       options.headers["user_token"] = user.user_token;
     }
 
-    console.log({ options });
-
     const response = await fetch(url, options);
     const result = await response.json();
     return result;

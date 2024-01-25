@@ -176,6 +176,27 @@ th.manage-column.column-post_content {
     padding: 20px;
 }
 
+
+.popover-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popover-close {
+    font-size: 24px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.popover-2{
+    width: 70%;
+    height: 70vh;
+    top: 10vh;
+}
+
+
+.popover-2 iframe {
+    height: calc(100vh - 368px);
+}
 .popover .title {
     font-size: 21px;
     font-weight: 700;

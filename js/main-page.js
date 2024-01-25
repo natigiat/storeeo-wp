@@ -21,7 +21,6 @@ jQuery(document).ready(function ($) {
 
     try {
       const products = await getProducts();
-      console.log({ products });
       // Do something with the products data
     } catch (error) {
       // Handle errors
@@ -64,7 +63,6 @@ jQuery(document).ready(function ($) {
     try {
       const response = await fetch(url, requestOptions);
       const data = await response.json();
-      console.log(data);
       return data;
     } catch (error) {
       console.error("Error:", error);

@@ -20,7 +20,6 @@ jQuery(document).ready(async function ($) {
         "<div class='error'>Your price must be greater than storeeo price</div>"
       );
     } else {
-      // console.log("adding");
       addProductToStore(item, product_data, store_price);
     }
   });
@@ -74,8 +73,6 @@ jQuery(document).ready(async function ($) {
   }
 
   async function addProductToStore(item, product, store_price) {
-    console.log({ product });
-
     $.ajax({
       type: "POST",
       url: ajax_call.add_product_to_store,
