@@ -81,9 +81,6 @@ jQuery(document).ready(async function ($) {
   }
 
   async function payToShop(item, product) {
-    // open in
-    // map products and inside map orderProducts and inside products object push product_store_id to array index
-
     console.log({ product });
     let shopUrls = {};
     let hasMultipleShops = false;
@@ -91,81 +88,88 @@ jQuery(document).ready(async function ($) {
     product.orderProducts.forEach(function (orderProduct) {
       const url = orderProduct.product.shop.shop_url;
       const product_store_id = orderProduct.product.product_store_id;
+      const quantity = orderProduct.quantity;
 
       if (shopUrls[url]) {
-        shopUrls[url].push(product_store_id);
+        shopUrls[url].push({ [product_store_id]: quantity });
         hasMultipleShops = true;
       } else {
-        shopUrls[url] = [product_store_id];
+        shopUrls[url] = [{ [product_store_id]: quantity }];
       }
     });
 
     console.log({ shopUrls });
     if (hasMultipleShops) {
       $("body").prepend(`
-        <div class="popover-back"></div>
-        <div class="popover popover-2">
-          <div class="popover-header">
-            <div class="title">Pay to supplier - Enjoy your fee</div>
-            <div class="popover-close"> x </div>
-          </div>
-          <div class="description">You will pay your costume price <br /> and supplier will take care of this order </div>
-          
-          <div class="shop-buttons">
-            ${Object.keys(shopUrls)
-              .map(
-                (url, index) => `
-              <button class="shop-button" data-url="${url}" data-index="${index}">Shop ${
-                  index + 1
-                }</button>
-            `
-              )
-              .join("")}
-          </div>
-          
-          <iframe id="shop-iframe" width="100%" height="100%"></iframe>
-        </div>
-      `);
+            <div class="popover-back"></div>
+            <div class="popover popover-2">
+                <div class="popover-header">
+                    <div class="title">Pay to supplier - Enjoy your fee</div>
+                    <div class="popover-close"> x </div>
+                </div>
+                <div class="description">You will pay your costume price <br /> and supplier will take care of this order </div>
+
+                <div class="shop-buttons">
+                    ${Object.keys(shopUrls)
+                      .map(
+                        (url, index) => `
+                                <button class="shop-button" data-url="${url}" data-index="${index}">Shop ${
+                          index + 1
+                        }</button>
+                            `
+                      )
+                      .join("")}
+                </div>
+
+                <iframe id="shop-iframe" width="100%" height="100%"></iframe>
+            </div>
+        `);
 
       $(".shop-button").on("click", function () {
         const selectedUrl = $(this).data("url");
         const selectedIndex = $(this).data("index");
         const productIds = shopUrls[selectedUrl];
-        console.log({ selectedUrl });
+        let pidString =
+          "[" +
+          productIds
+            .map(
+              (product) =>
+                `{${Object.keys(product)[0]}:${Object.values(product)[0]}}`
+            )
+            .join(",") +
+          "]";
 
-        // <iframe src="http://localhost/shop2/cart/?storeeo_checkout=true&pid=${product_store_id}" width="100%" height="100%"></iframe>
-
-        // Update iframe source with the selected shop URL and product IDs
         $("#shop-iframe").attr(
           "src",
-          `${selectedUrl}/cart/?storeeo_checkout=true&pid=[${productIds.join(
-            ","
-          )}]`
+          `${selectedUrl}/cart/?storeeo_checkout=true&pid=${pidString}`
         );
       });
     } else {
       const url = Object.keys(shopUrls)[0];
       const productIds = shopUrls[url];
-      console.log({ shopUrls });
-      $("body").prepend(`
-        <div class="popover-back"></div>
-        <div class="popover popover-2">
-          <div class="popover-header">
-            <div class="title">Pay to supplier - Enjoy your fee</div>
-            <div class="popover-close"> x </div>
-          </div>
-          <div class="description">You will pay your costume price <br /> and supplier will take care of this order </div>
-          
-          <iframe src="${url}/cart/?storeeo_checkout=true&pid=[${productIds.join(
-        ","
-      )}]" width="100%" height="100%"></iframe>
-        </div>
-      `);
-    }
+      console.log({ productIds });
+      let pidString =
+        "[" +
+        productIds
+          .map(
+            (product) =>
+              `{${Object.keys(product)[0]}:${Object.values(product)[0]}}`
+          )
+          .join(",") +
+        "]";
 
-    $("body").on("click", ".popover-close", function () {
-      $(".popover").remove();
-      $(".popover-back").remove();
-    });
+      $("body").prepend(`
+            <div class="popover-back"></div>
+            <div class="popover popover-2">
+                <div class="popover-header">
+                    <div class="title">Pay to supplier - Enjoy your fee</div>
+                    <div class="popover-close"> x </div>
+                </div>
+                <div class="description">You will pay your costume price <br /> and supplier will take care of this order </div>
+
+                <iframe src="${url}/cart/?storeeo_checkout=true&pid=${pidString}" width="100%" height="100%"></iframe>
+            </div>
+        `);
+    }
   }
 });
