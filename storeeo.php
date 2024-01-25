@@ -302,25 +302,41 @@ function update_product_on_storion($post_id) {
 function custom_cart_init_actions() {
     // Check if it's the cart page
     if (is_cart()) {
-
-        $product_data = isset($_GET['pid']) ? json_decode($_GET['pid'], true) : [];
-
+        $pid_param  = isset($_GET['pid']) ? $_GET['pid'] : null;
+        $json_data_fixed = preg_replace('/([{,])([a-zA-Z0-9_]+):/', '$1"$2":', $pid_param);
+        $products_data = json_decode(urldecode($json_data_fixed), true);
         $storeeo_checkout = isset($_GET['storeeo_checkout']) ? $_GET['storeeo_checkout'] : false;
+
+  
 
         if ($storeeo_checkout) {
             WC()->cart->empty_cart();
 
-            foreach ($product_data as $product_id => $quantity) {
-                // wp wc change price before adding to cart
-                $storreo_price = get_post_meta($product_id, "_custom_product_storeeo_price", true);
+       
+    
+            foreach ($products_data as $product) {
 
-                WC()->cart->add_to_cart($product_id, $quantity, 0, array(), array('storeeo_price' => $storreo_price));
-                WC()->cart->set_session();
+                foreach ($product as $product_id => $quantity) {
+               
+                    // wp wc change price before adding to cart
+                    $custom_field_name = "_custom_product_storeeo_price";
+                    $storreo_price = get_post_meta($product_id, $custom_field_name, true);
+
+                    // Make sure $quantity is a positive integer
+                    $quantity = absint($quantity);
+        
+                    // Add product to cart
+                    WC()->cart->add_to_cart($product_id, $quantity, 0, array(), array('storeeo_price' => $storreo_price));
+                }
             }
-
+    
+            // Save cart changes to session
+            WC()->cart->set_session();
+    
+            // Redirect to checkout page
             wp_redirect(wc_get_checkout_url());
+            exit();
         }
-
     }
 }
 
