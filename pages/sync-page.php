@@ -1,3 +1,6 @@
+<?php 
+if ( ! defined( 'ABSPATH' ) ) exit;
+?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Share Your Products</h1>
     <h4 class="">Share your Products, and get sale from another shops online</h4>

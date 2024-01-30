@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
 * This function uploads from a URL.
@@ -6,7 +7,7 @@
 * @see: https://gist.github.com/RadGH/3b544c827193927d1772
 *
 * Example usage: Upload photo from URL, display the attachment as as html <img>
-*   $attachment_id = rs_upload_from_url( "http://example.com/images/photo.png" );
+*   $attachment_id = storeeo_upload_from_url( "http://example.com/images/photo.png" );
 *   echo wp_get_attachment_image( $attachment_id, 'large' );
 */
 
@@ -20,7 +21,7 @@
  *
  * @return int|false
  */
-function rs_upload_from_url( $url, $title = null ) {
+function storeeo_upload_from_url( $url, $title = null ) {
  
 
     require_once( dirname( __FILE__ ) . '/../../../../wp-load.php');

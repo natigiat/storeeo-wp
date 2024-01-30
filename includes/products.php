@@ -1,7 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 
-
-function  add_product_to_storeeo_function($product){
+function  product_to_storeeo_function($product){
     global $API;
     $logo_id = get_theme_mod('custom_logo');
     $logo_url = wp_get_attachment_image_src($logo_id, 'full');
@@ -82,14 +82,16 @@ function  add_product_to_storeeo_function($product){
 
     if (is_wp_error($response)) {
         // Handle error
-        echo 'Request failed: ' . $response->get_error_message();
+        echo 'Request failed: ' . esc_html($response->get_error_message());
     } else {
         // Successful request
-
-        
         $body = wp_remote_retrieve_body($response);
         $decoded_body = json_decode($body, true); // If the response is in JSON format
-        echo $decoded_body["product_id"];
-    }     
+    
+        // Check if "product_id" is set before echoing
+        if (isset($decoded_body["product_id"])) {
+            echo esc_html($decoded_body["product_id"]);
+        }
+    }
 }
 

@@ -3,7 +3,7 @@ Contributors: storeeo
 Tags: woocommerce, woocommerce checkout, woocommerce order, woocommerce orders
 Requires at least: 3.0.1
 Tested up to: 6.4.1
-Stable tag: 2.1
+Stable tag: 1.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -37,6 +37,32 @@ Promote your merchandise by showcasing it to a wide audience of WooCommerce user
 = Do I need WooCommerce plugin installed for this to work =
 
 YES.  This sets up a test gateway for WooCommerce only.
+
+
+
+## External Service Usage
+
+This plugin relies on a 3rd party service for certain functionalities. The service is used to share products that you want with other woocomerce wp stores. Below are the details of its usage:
+
+- registration and login.
+- share your products that you want to share with other woocomerce stores on Storeeo.
+- iframe will open checkout page of other stores on Storeeo plugin page so you can finalize the checkout, when users order from your store 
+
+
+
+## External Service Details
+
+- **Service Provider:** storeeo
+- **Service Documentation:** https://www.storeeo.com/
+
+
+
+## Service Legal Information
+
+- **Terms of Use:** https://www.storeeo.com/terms
+- **Privacy Policy:** https://www.storeeo.com/privacy-policy
+
+
 
 == Screenshots ==
 

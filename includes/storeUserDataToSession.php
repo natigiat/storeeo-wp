@@ -1,18 +1,15 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 include './file_downloader.php';
-define('WP_USE_THEMES', false);
 require_once("../../../../wp-load.php");
+require_once("./validate.php");
+
 
 // Check if the 'product' key exists in the $_POST array
 if (isset($_POST['user'])) {
- $user = $_POST['user'];
+ $user = isset($_POST['user']) ? sanitize_post_data($_POST['user']) : null;
  $_SESSION['user'] = serialize($user);
 }
 
 
-// Function to check if SKU is unique
-function is_sku_unique($sku) {
-    $product = wc_get_product_id_by_sku($sku);
-    return empty($product);
-}

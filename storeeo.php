@@ -1,11 +1,14 @@
 <?php
 /*
-Plugin Name: Storeeo
-Description: Share Products betweern woocomerce stores.
-Version: 1.0.0
-Author: natigiat@gmail.com
-License: GPLv2 or later
-*/
+ * Plugin Name:       Storeeo
+ * Description:       Share Products between WooCommerce stores.
+ * Version:           natigiat@gmail.com
+ * Author:            John Smith
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       storeeo
+ * Domain Path:       /languages
+ */
 
 session_start();
 
@@ -17,9 +20,12 @@ function storeeo_plugin_menu() {
     add_submenu_page('storeeo-main', 'Share Products', 'Share Your Products', 'manage_options', 'storeeo-sync', 'storeeo_sync_page');
 }
 
+// Define the API endpoint, which is part of the external service
+// More details in the readme under "External Service Usage" section
 
 global $API;
-$API = "http://localhost:3001";
+$API = "https://api.storeeo.com";
+
 
 include_once(plugin_dir_path(__FILE__) . 'includes/products.php');
 
@@ -116,9 +122,9 @@ add_action('admin_enqueue_scripts', 'storeeo_admin_styles', 999);
 
 
 
-add_filter( 'manage_edit-product_columns', 'bbloomer_admin_products_visibility_column', 9999 );
+add_filter( 'manage_edit-product_columns', 'storeeo_admin_products_visibility_column', 9999 );
  
-function bbloomer_admin_products_visibility_column( $columns ){
+function storeeo_admin_products_visibility_column( $columns ){
    $columns['storeeo_watching'] = '<span class="manage-column column-product_tag">Storeeo</span>';
    $columns['storeeo_sells'] = '<span class="manage-column column-product_tag">Storeeo Sells</span>';
    $columns['storeeo_messages'] = '<span class="manage-column column-product_tag">Storeeo Messages</span>';
@@ -126,9 +132,9 @@ function bbloomer_admin_products_visibility_column( $columns ){
 }
 
 
-add_action( 'manage_product_posts_custom_column', 'bbloomer_admin_products_visibility_column_content', 10, 2 );
+add_action( 'manage_product_posts_custom_column', 'storeeo_admin_products_visibility_column_content', 10, 2 );
 
-function bbloomer_admin_products_visibility_column_content( $column, $product_id ) {
+function storeeo_admin_products_visibility_column_content( $column, $product_id ) {
     $is_watching = get_post_meta( $product_id, 'storeeo_watching', true );
     if ( $column == 'storeeo_watching' ) {
         
@@ -136,7 +142,7 @@ function bbloomer_admin_products_visibility_column_content( $column, $product_id
         
         // Check if the product is marked as watching
         if ( $is_watching === 'true' ) {
-            echo '<span class="watching_btn" data-id="'.$storeeo__id.'" >Watching</span>';
+            echo '<span class="watching_btn" data-id="' . esc_attr($storeeo__id) . '">Watching</span>';
         } else {
             echo '-';
         }
@@ -149,7 +155,7 @@ function bbloomer_admin_products_visibility_column_content( $column, $product_id
              echo '-';
         }else{
             if ( $storee_sells_count ) {
-                echo '<span class="watching_btn" data-id="'.$storeeo__id.'" >Watching</span>';
+                echo '<span class="watching_btn" data-id="'.esc_attr($storeeo__id).'" >Watching</span>';
             } else {
                 echo '0';
             }
@@ -174,12 +180,12 @@ function bbloomer_admin_products_visibility_column_content( $column, $product_id
 
 
 // The code for displaying WooCommerce Product Custom Fields
-add_action( 'woocommerce_product_options_general_product_data', 'woocommerce_product_custom_fields' ); 
+add_action( 'woocommerce_product_options_general_product_data', 'storeeo_product_custom_fields' ); 
 // Following code Saves  WooCommerce Product Custom Fields
-add_action( 'woocommerce_process_product_meta', 'woocommerce_product_custom_fields_save' );
+add_action( 'woocommerce_process_product_meta', 'storeeo_product_custom_fields_save' );
 
 
-function woocommerce_product_custom_fields () {
+function storeeo_product_custom_fields () {
 global $woocommerce, $post;
 echo '<div class="product_custom_field">';
 // Custom Product Text Field
@@ -187,7 +193,7 @@ woocommerce_wp_text_input(
     array(
         'id' => '_custom_product_storeeo_price',
         'class' => 'btn',
-        'label' => __('Storeeo Price', 'woocommerce'),
+        'label' => esc_html__('Storeeo Price', 'woocommerce'), // Escaping the dynamic label
         'desc_tip' => 'true'
     )
 );
@@ -197,7 +203,7 @@ echo '</div>';
 }
 
 
-function woocommerce_product_custom_fields_save($post_id)
+function storeeo_product_custom_fields_save($post_id)
 {
     // Custom Product Text Field
     $woocommerce_custom_product_storeeo_price = $_POST['_custom_product_storeeo_price'];
@@ -229,9 +235,7 @@ add_action('woocommerce_thankyou', function ($order_id) {
         'order_key' => $order->get_order_key(),
     );
 
-    // echo '<pre>';
-    // var_dump($order);
-    // echo '</pre>';
+
 
 
     $products_id = [];
@@ -270,10 +274,7 @@ add_action('woocommerce_thankyou', function ($order_id) {
                     'headers' => $headers,
                 )
             );
-    
-            echo '<pre>';
-            var_dump($response);
-            echo '</pre>';
+
         }
     }
     
@@ -281,14 +282,14 @@ add_action('woocommerce_thankyou', function ($order_id) {
 
 
 
-add_action('save_post', 'update_product_on_storion');
+add_action('save_post', 'storeeo_save_product');
 
-function update_product_on_storion($post_id) {
+function storeeo_save_product($post_id) {
     if ('product' === get_post_type($post_id)) {
         // Get the product object
         $product = wc_get_product($post_id);
         if ($product) {
-            add_product_to_storeeo_function($product);
+            product_to_storeeo_function($product);
         }
     }
     
@@ -299,7 +300,7 @@ function update_product_on_storion($post_id) {
 
 
 
-function custom_cart_init_actions() {
+function storeeo_cart_init_actions() {
     // Check if it's the cart page
     if (is_cart()) {
         $pid_param  = isset($_GET['pid']) ? $_GET['pid'] : null;
@@ -340,13 +341,13 @@ function custom_cart_init_actions() {
     }
 }
 
-add_action('wp', 'custom_cart_init_actions');
+add_action('wp', 'storeeo_cart_init_actions');
 
 
 
-add_action( 'woocommerce_before_calculate_totals', 'rudr_custom_price_refresh' );
+add_action( 'woocommerce_before_calculate_totals', 'storeeo_custom_price_refresh' );
 
-function rudr_custom_price_refresh( $cart_object ) {
+function storeeo_custom_price_refresh( $cart_object ) {
 
 	foreach ( $cart_object->get_cart() as $item ) {
 

@@ -1,4 +1,7 @@
 
+<?php 
+if ( ! defined( 'ABSPATH' ) ) exit;
+?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Products</h1>
     <h4 class="">Add Products from other supplier to your store</h4>

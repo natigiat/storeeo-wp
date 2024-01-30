@@ -1,15 +1,17 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 include './file_downloader.php';
-define('WP_USE_THEMES', false);
 require_once("../../../../wp-load.php");
+require_once("./validate.php");
 
 // Check if the 'product' key exists in the $_POST array
 if (isset($_POST['product'])) {
-    $product_data = $_POST['product'];
-    $store_price = $_POST['store_price'];
+    $product_data = isset($_POST['product']) ? sanitize_post_data($_POST['product']) : null;
+    $store_price = isset($_POST['store_price']) ? sanitize_post_data($_POST['store_price']) : null;
+    
  
-    $mainImage =  rs_upload_from_url($product_data['product_main_image']);
+    $mainImage =  storeeo_upload_from_url($product_data['product_main_image']);
   
 
 
@@ -22,7 +24,7 @@ if (isset($_POST['product'])) {
     $product->set_sold_individually( true );
     $product->set_image_id(  $mainImage );
     if( $product_data['product_sku'] ) {
-        $product->set_sku(  !is_sku_unique($product_data['product_sku']) ?  $product_data['product_sku']+01  : $product_data['product_sku']);
+        $product->set_sku(  !storeeo_is_sku_unique($product_data['product_sku']) ?  $product_data['product_sku']+01  : $product_data['product_sku']);
     }
  
     if($product_data['product_quantity'] > 0){
@@ -49,19 +51,13 @@ if (isset($_POST['product'])) {
     // Check if the product was saved successfully
     if ($product_id) {
         // Debug information
-        echo 'Product created successfully. Product ID: ' . $product_id;
+        echo 'Product created successfully. Product ID: ' . esc_attr($product_id);
     } else {
         // Debug information
         echo 'Error creating product.';
     }
 } else {
     // Debug information
-    echo 'No product data in the $_POST array.';
+    echo 'No product data added.';
 }
 
-
-// Function to check if SKU is unique
-function is_sku_unique($sku) {
-    $product = wc_get_product_id_by_sku($sku);
-    return empty($product);
-}

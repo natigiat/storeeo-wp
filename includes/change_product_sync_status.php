@@ -1,14 +1,17 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 
 include './file_downloader.php';
-define('WP_USE_THEMES', false);
 require_once("../../../../wp-load.php");
+require_once("./validate.php");
+
 
 // Check if the 'product' key exists in the $_POST array
 if (isset($_POST['product_id'])) {
-    $product_id = $_POST['product_id'];
-    $storeeo_sync_id = $_POST['storeeo_sync_id'];
-    $status = $_POST['status'];
+    $product_id = isset($_POST['product_id']) ? sanitize_post_data($_POST['product_id']) : null;
+    $storeeo_sync_id = isset($_POST['storeeo_sync_id']) ? sanitize_post_data($_POST['storeeo_sync_id']) : null;
+    $status = isset($_POST['status']) ? sanitize_post_data($_POST['status']) : null;
 
     
     $storedUser = unserialize($_SESSION['user']);
@@ -35,7 +38,7 @@ if (isset($_POST['product_id'])) {
         ]);
         
         if (is_wp_error($response)) {
-            echo 'Request failed: ' . $response->get_error_message();
+            echo 'Request failed: ' . esc_html($response->get_error_message());
         } else {
             
             $sync_status = update_post_meta($product_id, 'storeeo_sync', $status);
