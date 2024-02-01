@@ -10,7 +10,6 @@
  * Domain Path:       /languages
  */
 
-session_start();
 
 // Create the main menu and submenus
 function storeeo_plugin_menu() {
@@ -24,8 +23,13 @@ function storeeo_plugin_menu() {
 // More details in the readme under "External Service Usage" section
 
 global $API;
-$API = "https://api.storeeo.com";
+$API = "http://localhost:3001";
+// $API = "https://api.storeeo.com";
 
+
+if (!session_id()) {
+    session_start();
+}
 
 include_once(plugin_dir_path(__FILE__) . 'includes/products.php');
 
@@ -72,9 +76,9 @@ function storeeo_admin_styles() {
     // Enqueue the admin style
     wp_enqueue_style($handle, $style_url, $dependencies, $version);
 
-    wp_enqueue_script('api', plugin_dir_url(__FILE__) . 'js/api.js', array('jquery'), null, true);
-    wp_enqueue_script('general', plugin_dir_url(__FILE__) . 'js/general.js', array('jquery'), null, true);
-    wp_localize_script('general', 'ajax_call', array('storeUserDataToSession' => plugin_dir_url(__FILE__) . './includes/storeUserDataToSession.php'));
+    wp_enqueue_script('storeeo-api', plugin_dir_url(__FILE__) . 'js/api.js', array('jquery'), null, true);
+    wp_enqueue_script('storeeo-general', plugin_dir_url(__FILE__) . 'js/general.js', array('jquery'), null, true);
+    wp_localize_script('storeeo-general', 'ajax_call', array('checkStoreConnection' => plugin_dir_url(__FILE__) . './includes/checkStoreConnection.php'));
 
     
     $current_screen = get_current_screen();
@@ -99,7 +103,10 @@ function storeeo_admin_styles() {
     // Check if it's the Products page
     if (isset($_GET['page']) && $_GET['page'] === 'storeeo-products') {
         wp_enqueue_script('products-page', plugin_dir_url(__FILE__) . 'js/products-page.js', array('jquery'), '1.0', true);
-        wp_localize_script('products-page', 'ajax_call', array('add_product_to_store' => plugin_dir_url(__FILE__) . './includes/add_product_to_store.php'));
+        wp_localize_script('products-page', 'ajax_call', array(
+            'add_product_to_store' => plugin_dir_url(__FILE__) . './includes/add_product_to_store.php', 
+            'checkStoreConnection' => plugin_dir_url(__FILE__) . './includes/checkStoreConnection.php'
+        ));
     }
 
     // Check if it's the Sync Page page
@@ -107,7 +114,8 @@ function storeeo_admin_styles() {
         wp_enqueue_script('sync-page', plugin_dir_url(__FILE__) . 'js/sync-page.js', array('jquery'), null, true);
         wp_localize_script('sync-page', 'ajax_call', array(
         'change_product_sync_status' => plugin_dir_url(__FILE__) . './includes/change_product_sync_status.php' ,
-        'add_product_to_storeeo' => plugin_dir_url(__FILE__) . './includes/add_product_to_storeeo.php'
+        'add_product_to_storeeo' => plugin_dir_url(__FILE__) . './includes/add_product_to_storeeo.php',
+        'checkStoreConnection' => plugin_dir_url(__FILE__) . './includes/checkStoreConnection.php'
     ));
 
         
@@ -252,10 +260,10 @@ add_action('woocommerce_thankyou', function ($order_id) {
     }
 
 
-
-    if (isset($_SESSION['user']) && !empty($products_id)) {
+    
+    if (!empty($products_id)) {
         if ($order->status != 'failed') {
-            $storedUser = unserialize($_SESSION['user']);
+           
             $url = $API."/orders";
 
             $orderData['products_id'] = $products_id;
@@ -263,7 +271,6 @@ add_action('woocommerce_thankyou', function ($order_id) {
             // Define additional headers
             $headers = array(
                 'Content-Type' => 'application/json', 
-                'user_token' => $storedUser['user_token'], 
                 'shop_url'=>home_url(),
             );
     

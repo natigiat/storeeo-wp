@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
+// if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 include './file_downloader.php';
@@ -13,13 +13,11 @@ if (isset($_POST['product_id'])) {
     $storeeo_sync_id = isset($_POST['storeeo_sync_id']) ? sanitize_post_data($_POST['storeeo_sync_id']) : null;
     $status = isset($_POST['status']) ? sanitize_post_data($_POST['status']) : null;
 
-    
-    $storedUser = unserialize($_SESSION['user']);
+   
     if( $status  === "false"){
     
         $headers = [
             'Content-Type' => 'application/json', 
-            'user_token'   => $storedUser['user_token'], 
             'shop_url'     => home_url(),
         ];
 
@@ -40,9 +38,8 @@ if (isset($_POST['product_id'])) {
         if (is_wp_error($response)) {
             echo 'Request failed: ' . esc_html($response->get_error_message());
         } else {
-            
             $sync_status = update_post_meta($product_id, 'storeeo_sync', $status);
-            echo "failed";
+            echo "ok";
         }
 
     }else{

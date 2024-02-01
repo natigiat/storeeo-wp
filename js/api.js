@@ -46,7 +46,6 @@ async function fetchData(url, method, data = null, auth) {
 
     if (auth) {
       const user = getCookieValue("storeeo_u");
-      options.headers["user_token"] = user.user_token;
     }
 
     const response = await fetch(url, options);

@@ -1,5 +1,6 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
+// if ( ! defined( 'ABSPATH' ) ) exit;
+
 require_once(ABSPATH . 'wp-includes/formatting.php');
 
 function sanitize_post_data($data) {

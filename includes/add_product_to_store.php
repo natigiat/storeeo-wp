@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
+// if ( ! defined( 'ABSPATH' ) ) exit;
 
 include './file_downloader.php';
 require_once("../../../../wp-load.php");

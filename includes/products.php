@@ -1,10 +1,15 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
+
+require_once(ABSPATH . 'wp-includes/theme.php');
 
 function  product_to_storeeo_function($product){
     global $API;
+
+
+
     $logo_id = get_theme_mod('custom_logo');
     $logo_url = wp_get_attachment_image_src($logo_id, 'full');
+
 
 
     $product_gallery_ids = $product->get_gallery_image_ids();
@@ -46,7 +51,7 @@ function  product_to_storeeo_function($product){
         'product_store_id'      =>(float)$product->id,
         'product_regular_price' => (float)$product->get_price(),
         'product_storeeo_price' => (float)$storreo_price,
-        'logo_url'              => $logo_url['url'],
+        'logo_url'              => $logo_url ? $logo_url['url'] : "",
         'product_visibility'   => true
     );
 
@@ -61,12 +66,10 @@ function  product_to_storeeo_function($product){
     }
 
 
-    $storedUser = unserialize($_SESSION['user']);
 
     // Define additional headers
     $headers = array(
         'Content-Type' => 'application/json', 
-        'user_token' => $storedUser['user_token'], 
         'shop_url'=>home_url(),
     );
 
@@ -80,6 +83,8 @@ function  product_to_storeeo_function($product){
         )
     );
 
+
+
     if (is_wp_error($response)) {
         // Handle error
         echo 'Request failed: ' . esc_html($response->get_error_message());
@@ -87,10 +92,18 @@ function  product_to_storeeo_function($product){
         // Successful request
         $body = wp_remote_retrieve_body($response);
         $decoded_body = json_decode($body, true); // If the response is in JSON format
-    
+        $product_storeeo_id = $decoded_body['product_id'];
         // Check if "product_id" is set before echoing
-        if (isset($decoded_body["product_id"])) {
-            echo esc_html($decoded_body["product_id"]);
+        if (isset($product_storeeo_id)) {
+            $result = update_post_meta($product->id, 'storeeo_sync_id', 6);
+
+            // if ($result === false) {
+            //     // There was an error
+            //     echo "Failed to update metadata: " . get_post_meta($product->id, 'storeeo_sync_id', true);
+            // } else {
+            //     // Successful update
+            //     echo "Metadata updated successfully!" .  get_post_meta($product->id, 'storeeo_sync_id', true);
+            // }
         }
     }
 }

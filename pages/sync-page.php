@@ -1,5 +1,8 @@
 <?php 
-if ( ! defined( 'ABSPATH' ) ) exit;
+ require_once(ABSPATH . 'wp-includes/post.php'); // Include the necessary WordPress core file
+ if (!class_exists('WP_List_Table')) {
+    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+}
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Share Your Products</h1>
@@ -7,9 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     <?php
     // Include the main class file for WP_List_Table
     // Include the main class file for WP_List_Table
-if (!class_exists('WP_List_Table')) {
-    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
-}
 
 // Your main plugin class
 class Storeeo_Main_Table extends WP_List_Table {
@@ -125,7 +125,7 @@ class Storeeo_Main_Table extends WP_List_Table {
             
                 $storeeo_discount = '';
             
-                if ($regular_price > 0) {
+                if ($regular_price > 0 && $storeeo_price) {
                     $storeeo_discount = number_format(($regular_price - $storeeo_price) / $regular_price * 100, 2) . "%";
                 }
             
@@ -178,9 +178,10 @@ class Storeeo_Main_Table extends WP_List_Table {
        
         $post_content_value = '';
 
-        $storeeo_sync =get_post_meta($item['id'], "storeeo_sync", true);
-        $storeeo_sync_id =get_post_meta($item['id'], "storeeo_sync_id", true);
+       
 
+        $storeeo_sync     = get_post_meta($item['id'], "storeeo_sync", true);
+        $storeeo_sync_id =  get_post_meta($item['id'], "storeeo_sync_id", true);
         
         $regular_price = floatval($item['regular-price']);
         $storeeo_price = floatval($item['storeeo-price']);
@@ -190,13 +191,19 @@ class Storeeo_Main_Table extends WP_List_Table {
             $storeeo_discount =  "%" .number_format(($regular_price - $storeeo_price) / $regular_price * 100, 2);
         } else {
             $storeeo_discount = 'Invalid input values'; // or handle the situation accordingly
-        }        // var_dump($storeeo_sync);
+        }        
 
         // Switch statement to handle different columns
         switch ($column_name) {
             case 'image':
                 // Output an image tag for the 'image' column
                 return $item[$column_name];
+
+
+         
+            case 'storeeo_sync_id':
+                // Output the content for 'categories' and 'tags' columns
+                return $storeeo_sync_id ? $storeeo_sync_id : "-";
 
             case 'name':
                     // Output an image tag for the 'image' column
@@ -212,6 +219,18 @@ class Storeeo_Main_Table extends WP_List_Table {
                 // Output the content for 'categories' and 'tags' columns
                 return $item[$column_name] ? $item[$column_name] : "No Tags";
 
+            case 'sku':
+                // Output the content for 'categories' and 'tags' columns
+                return $item[$column_name] ? $item[$column_name] : "-";
+
+            case 'storeeo-price':
+                // Output the content for 'categories' and 'tags' columns
+                return $item[$column_name] ? $item[$column_name] : "-";
+
+            case 'sales':
+                // Output the content for 'categories' and 'tags' columns
+                return $item[$column_name] ? $item[$column_name] : "0";
+
             case 'sync':
                 // Output the content for 'categories' and 'tags' columns
                 if($storeeo_sync  ==="true"){
@@ -225,8 +244,7 @@ class Storeeo_Main_Table extends WP_List_Table {
                 return "<button class='storeeo-discount'>$storeeo_discount</button>";
 
             
-            case 'storeeo_sync_id':
-                return "<div class='storeeo-sync-id'>$storeeo_sync_id</div>";
+
                 
                 
 
@@ -246,8 +264,10 @@ class Storeeo_Main_Table extends WP_List_Table {
 
     // Define the checkbox column
     protected function column_cb($item) {
-        return '<input type="checkbox" value="' . esc_attr($item['ID']) . '" />';
-
+        // Check if the 'ID' key exists in the $item array
+        $value = isset($item['ID']) ? $item['ID'] : '';
+    
+        return '<input type="checkbox" value="' . $value . '" />';
     }
 
 

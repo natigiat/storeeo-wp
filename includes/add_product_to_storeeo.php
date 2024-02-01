@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
+// if ( ! defined( 'ABSPATH' ) ) exit;
 
 include './file_downloader.php';
 require_once("../../../../wp-load.php");
@@ -13,6 +13,7 @@ if (isset($_POST['product_store_id'])) {
   
     // Get the product object
     $product = wc_get_product($product_store_id);
+
     
     // Check if the product exists
     if ($product) {

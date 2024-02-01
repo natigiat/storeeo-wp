@@ -158,6 +158,9 @@ jQuery(document).ready(async function ($) {
           .join(",") +
         "]";
 
+      console.log({
+        url: `${url}/cart/?storeeo_checkout=true&pid=${pidString}" width="100%" height="100%`,
+      });
       // iframe for storeeo checkout utilizing the external service
       // iframe will open checkout page of other stores on Storeeo plugin page so you can finalize the checkout,
       // when users order from your store

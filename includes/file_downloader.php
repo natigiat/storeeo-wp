@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
+// if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
 * This function uploads from a URL.
