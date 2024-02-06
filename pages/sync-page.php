@@ -33,7 +33,7 @@ class Storeeo_Main_Table extends WP_List_Table {
             'sku'        => 'SKU',
             'stock'      => 'Stock',
             'regular-price'     => 'Regular Price', 
-            'storeeo-price'=> 'Storeeo Price', 
+            'storeeo-price'=> 'Supplier Price', 
             'storeeo-discount'=> 'Discount', 
             'top-sellers' => 'Top Sellers',
             'sales'       => 'Sales',
@@ -225,9 +225,13 @@ class Storeeo_Main_Table extends WP_List_Table {
 
             case 'storeeo-price':
                 // Output the content for 'categories' and 'tags' columns
-                return $item[$column_name] ? $item[$column_name] : "-";
+                return $item[$column_name] ? $item[$column_name] : '<input type="number" class="store_price" placeholder="Supplier price">';
 
             case 'sales':
+                // Output the content for 'categories' and 'tags' columns
+                return $item[$column_name] ? $item[$column_name] : "0";
+            
+            case 'top-sellers':
                 // Output the content for 'categories' and 'tags' columns
                 return $item[$column_name] ? $item[$column_name] : "0";
 

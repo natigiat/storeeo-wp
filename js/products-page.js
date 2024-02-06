@@ -59,7 +59,7 @@ jQuery(document).ready(async function ($) {
         `<td><button>%${discount_percentage.toFixed(2)}</button></td>`
       );
       newRow.append(
-        `<td><input type="number" class="store_price" placeholder="set your price"></input></td>`
+        `<td><input type="number" class="store_price" placeholder="Supplier price"></input></td>`
       );
       newRow.append(
         `<td class="flex">   

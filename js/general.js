@@ -16,10 +16,10 @@ jQuery(document).ready(function ($) {
       type: "POST",
       url: ajax_call.checkStoreConnection,
       success: function (response) {
-        console.log(response);
-        if (!response === "ok") {
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        if (!responseData["error"]) {
           loginPopUser();
-        } else {
         }
       },
     });

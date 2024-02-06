@@ -1,7 +1,27 @@
 jQuery(document).ready(function ($) {
   $(".sync").on("click", ".share-product", function () {
     const element = $(this);
-    addProduct(element);
+    $(".error").remove();
+
+    const regular_price = Number(
+      $(this).closest("tr").find(".regular-price").text()
+    );
+    const storeeo_price = Number(
+      $(this).closest("tr").find(".store_price").val()
+    );
+
+    console.log({ storeeo_price });
+    console.log({ regular_price });
+    if (!storeeo_price) {
+      $(this).after("<div class='error'>Please set suppliers price</div>");
+      $(this).closest("tr").find(".store_price").focus();
+    } else if (Number(regular_price) < storeeo_price) {
+      $(this).after(
+        "<div class='error'>Your regular price must be greater than suppliers price</div>"
+      );
+    } else {
+      addProduct(element);
+    }
   });
 
   $("body").on("click", ".connected-product", function () {

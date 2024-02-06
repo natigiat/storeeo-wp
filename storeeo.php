@@ -332,7 +332,8 @@ function storeeo_cart_init_actions() {
 
                     // Make sure $quantity is a positive integer
                     $quantity = absint($quantity);
-        
+
+                    
                     // Add product to cart
                     WC()->cart->add_to_cart($product_id, $quantity, 0, array(), array('storeeo_price' => $storreo_price));
                 }
