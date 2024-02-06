@@ -16,9 +16,9 @@ jQuery(document).ready(function ($) {
       type: "POST",
       url: ajax_call.checkStoreConnection,
       success: function (response) {
-        const responseData = JSON.parse(response);
-        console.log(responseData);
-        if (!responseData["error"]) {
+        const startIndex = response.indexOf('"error"');
+
+        if (startIndex !== -1) {
           loginPopUser();
         }
       },
