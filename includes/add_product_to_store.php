@@ -6,14 +6,32 @@ require_once("../../../../wp-load.php");
 require_once("./validate.php");
 
 // Check if the 'product' key exists in the $_POST array
-if (isset($_POST['product'])) {
-    $product_data = isset($_POST['product']) ? sanitize_post_data($_POST['product']) : null;
+if (isset($_POST['product_storeeo_id'])) {
+    $product_storeeo_id = isset($_POST['product_storeeo_id']) ? sanitize_post_data($_POST['product_storeeo_id']) : null;
     $store_price = isset($_POST['store_price']) ? sanitize_post_data($_POST['store_price']) : null;
     
  
-    $mainImage =  storeeo_upload_from_url($product_data['product_main_image']);
+   
+    // call remote url to get product data by url
+
+    $url = "$API/products/$product_storeeo_id";
+
+    $headers = [
+        'Content-Type' => 'application/json', 
+        'shop_url'     => home_url(),
+    ];
+
+    $response = wp_remote_request($url, [
+        'method'  => 'GET',
+        'headers' => $headers,
+    ]);
+
+    $body = wp_remote_retrieve_body($response);
+    $product_data  =  json_decode($body, true);
   
 
+    $mainImage =  storeeo_upload_from_url($product_data['product_main_image']);
+    
 
     $product = new WC_Product_Simple();
     $product->set_name( $product_data['product_title'] );

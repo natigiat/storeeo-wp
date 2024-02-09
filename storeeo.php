@@ -86,8 +86,9 @@ function storeeo_admin_styles() {
 
     
     // Check if it's the Shippic page
-   if (is_page('shippic')) {
+    if (isset($_GET['page']) && $_GET['page'] === 'storeeo-main') {
      wp_enqueue_script('main-page', plugin_dir_url(__FILE__) . 'js/main-page.js', array('jquery'), null, true);
+     wp_enqueue_script('chart-js', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js', array(), '3.7.0', true);
     }
 
     // Check if it's the Orders page
@@ -107,8 +108,10 @@ function storeeo_admin_styles() {
             'add_product_to_store' => plugin_dir_url(__FILE__) . './includes/add_product_to_store.php', 
             'checkStoreConnection' => plugin_dir_url(__FILE__) . './includes/checkStoreConnection.php'
         ));
+        wp_enqueue_style('jquery-ui-css', 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
     }
-
+  
+    add_action('wp_enqueue_scripts', 'my_enqueue_styles');
     // Check if it's the Sync Page page
     if (isset($_GET['page']) && $_GET['page'] === 'storeeo-sync') {
         wp_enqueue_script('sync-page', plugin_dir_url(__FILE__) . 'js/sync-page.js', array('jquery'), null, true);
@@ -135,7 +138,6 @@ add_filter( 'manage_edit-product_columns', 'storeeo_admin_products_visibility_co
 function storeeo_admin_products_visibility_column( $columns ){
    $columns['storeeo_watching'] = '<span class="manage-column column-product_tag">Storeeo</span>';
    $columns['storeeo_sells'] = '<span class="manage-column column-product_tag">Storeeo Sells</span>';
-   $columns['storeeo_messages'] = '<span class="manage-column column-product_tag">Storeeo Messages</span>';
    return $columns;
 }
 

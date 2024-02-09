@@ -5,6 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 <div class="wrap">
     <h1 class="wp-heading-inline">Products</h1>
     <h4 class="">Add Products from other supplier to your store</h4>
+    <div class="flex-table">
+        <div class="filters">
+           
+        </div>
+       
+  <div class="table-date">
 <?php 
      $current_file = basename(__FILE__);
     
@@ -139,6 +145,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     $table->search_box('Search', 'search');
     $table->display();
     ?>
+
+</div>
+
+<div id="paginationControls">
+        <button id="previousPage">Previous</button>
+        <button id="nextPage">Next</button>
+        <label for="itemsPerPage">per page:</label>
+        <input type="number" id="itemsPerPage" min="1">
+    </div>
+</div>
 </div>
 
 

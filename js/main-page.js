@@ -1,72 +1,186 @@
 jQuery(document).ready(function ($) {
-  // Get the modal
-  var modal = $("#myModal");
+  //general sales
+  var data = {
+    labels: [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ],
+    datasets: [
+      {
+        label: "Sales Data by Days",
+        data: [200, 300, 400, 600, 700, 500, 300], // Sales data for each day
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
 
-  // Get the button that opens the modal
-  var btn = $("#addProductsButton");
+  var ctx = document.getElementById("myChart").getContext("2d");
 
-  // Get the <span> element that closes the modal
-  var span = $(".close")[0];
-
-  // When the user clicks on the button, open the modal
-  btn.on("click", async function () {
-    modal.css("display", "block");
-
-    // You can fetch and populate the table rows dynamically here
-    // For simplicity, let's add a sample row
-    var tbody = $("tbody");
-    tbody.html(
-      '<tr><td>Supplier 1</td><td><img src="image.jpg" alt="Product Image"></td><td>Product 1</td><td>SKU123</td><td>50</td><td>$20</td><td>Free Shipping</td><td><button onclick="addProduct()">Add</button></td></tr>'
-    );
-
-    try {
-      const products = await getProducts();
-      // Do something with the products data
-    } catch (error) {
-      // Handle errors
-    }
+  var myChart = new Chart(ctx, {
+    type: "line",
+    data: data,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
   });
 
-  // When the user clicks on <span> (x), close the modal
-  $(".close").on("click", function () {
-    modal.css("display", "none");
+  // total sales
+  var total_data = {
+    labels: ["Shop 1", "Shop 2", "Shop 3", "Shop 4", "Shop 5"],
+    datasets: [
+      {
+        label: "Shop Data",
+        data: [20, 30, 40, 50, 60], // Example data for each shop
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(255, 206, 86, 0.5)",
+          "rgba(75, 192, 192, 0.5)",
+          "rgba(153, 102, 255, 0.5)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Get the canvas element
+  var ctx_total = document.getElementById("totalSales").getContext("2d");
+
+  // Render Chart using Chart.js
+  var total_chaert = new Chart(ctx_total, {
+    type: "doughnut",
+    data: total_data,
+    options: {
+      plugins: {
+        legend: {
+          display: true,
+          position: "right",
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+    },
   });
 
-  // When the user clicks anywhere outside of the modal, close it
-  $(window).on("click", function (event) {
-    if (event.target == modal[0]) {
-      modal.css("display", "none");
-    }
+  // yourProfit
+  var data_yourProfit = {
+    datasets: [
+      {
+        label: "Shop Data",
+        data: [20], // Example data for each shop
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(255, 206, 86, 0.5)",
+          "rgba(75, 192, 192, 0.5)",
+          "rgba(153, 102, 255, 0.5)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Get the canvas element
+  var ctx_yourProfit = document.getElementById("yourProfit").getContext("2d");
+
+  // Render Chart using Chart.js
+  var total_yourProfit = new Chart(ctx_yourProfit, {
+    type: "doughnut",
+    data: data_yourProfit,
+    options: {
+      plugins: {
+        legend: {
+          display: true,
+          position: "right",
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+    },
   });
 
-  // Function to simulate adding a product (you can implement your logic here)
-  function addProduct() {
-    alert("Product added!");
-  }
+  // get orders
+  getOrders();
+  async function getOrders() {
+    const allOrders = await getRecord("orders");
+    const tableBody = $("#the-list");
 
-  // get products
-  async function getProducts() {
-    var url = "http://localhost:3001/products";
+    console.log({ allOrders });
+    allOrders.forEach((product) => {
+      const product_data = JSON.stringify(product);
+      const newRow = $(`<tr data-product='${product_data}'>`);
 
-    var headers = new Headers();
-    headers.append(
-      "Cookie",
-      "connect.sid=s%3A0oKVNptxcHZSdCLm-h1HGRR0rtrdc898.s%2FvGmIXY4kAdVYu5PxUc006ah6eMurrCShZz085jdVk"
-    );
+      newRow.append(`<td>${product.order_key ? product.order_key : "-"}</td>`);
+      newRow.append(`
+      <td class="flex order-products">
+        ${product.orderProducts
+          ?.map(
+            (product) => `
+          <img src=${product.product.product_main_image} />
+        `
+          )
+          .join("")}
+      <div class="order-items-length">(${
+        product.orderProducts.length
+      } items)</div></td>`);
+      newRow.append(`<td>${product.amount ? product.amount : "-"}</td>`);
 
-    var requestOptions = {
-      method: "GET",
-      headers: headers,
-      redirect: "follow",
-    };
+      let totalAmount = 0;
+      product.orderProducts.forEach((product) => {
+        const price = parseFloat(product.product.product_storeeo_price);
+        if (!isNaN(price)) {
+          totalAmount += price;
+        }
+      });
 
-    try {
-      const response = await fetch(url, requestOptions);
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error:", error);
-      throw error;
-    }
+      totalAmount =
+        totalAmount !== 0 ? totalAmount.toFixed(2).replace(/^0+/, "") : "-";
+
+      newRow.append(`<td>${totalAmount}</td>`);
+      newRow.append(`<td class="profit">${product.amount - totalAmount}</td>`);
+
+      const options = {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "UTC",
+      };
+
+      const originalDate = new Date(product.createdAt);
+      let formattedDate = originalDate.toLocaleString("en-GB", options);
+      formattedDate = formattedDate.replace(",", " -");
+      newRow.append(`<td>${formattedDate}</td>`);
+
+      newRow.append(`<td> <button class=''>order created</button></td>`);
+
+      tableBody.append(newRow);
+    });
   }
 });

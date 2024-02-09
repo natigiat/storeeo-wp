@@ -2,7 +2,7 @@
 
 require_once(ABSPATH . 'wp-includes/theme.php');
 
-function  product_to_storeeo_function($product){
+function  product_to_storeeo_function($product , $storreo_price=null){
     global $API;
 
 
@@ -36,7 +36,7 @@ function  product_to_storeeo_function($product){
         }
     }
 
-    $storreo_price = get_post_meta($product->id, "_custom_product_storeeo_price", true);
+    $storreo_price = $storreo_price ? $storreo_price :get_post_meta($product->id, "_custom_product_storeeo_price", true);
 
 
 

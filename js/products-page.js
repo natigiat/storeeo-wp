@@ -1,11 +1,17 @@
 jQuery(document).ready(async function ($) {
-  getProducts();
+  // Initial pagination
+  let itemsPerPage = 10;
+  $("#itemsPerPage").val(itemsPerPage);
+  let currentPage = 1;
+  getProducts(currentPage, itemsPerPage);
 
   //add product onClick
   $("body").on("click", ".add-product", function (e) {
     const item = $(this);
     $(".error").remove();
     const product_data = $(this).closest("tr").data("product");
+    const product_storeeo_id = product_data["product_id"];
+
     const store_price = Number(
       $(this).closest("tr").find(".store_price").val()
     );
@@ -20,15 +26,20 @@ jQuery(document).ready(async function ($) {
         "<div class='error'>Your price must be greater than storeeo price</div>"
       );
     } else {
-      addProductToStore(item, product_data, store_price);
+      addProductToStore(item, product_storeeo_id, store_price);
     }
   });
 
   $(".no-items").hide();
 
-  async function getProducts() {
-    const allProducts = await getRecord("products");
+  async function getProducts(pageNumber, itemsPerPage) {
+    const allProducts = await getRecord(
+      `products?pageNumber=${pageNumber}&itemsPerPage=${itemsPerPage}`
+    );
+
     const tableBody = $("#the-list");
+
+    tableBody.empty(); // Clear previous content
 
     allProducts.forEach((product) => {
       var discount_percentage =
@@ -72,12 +83,30 @@ jQuery(document).ready(async function ($) {
     });
   }
 
-  async function addProductToStore(item, product, store_price) {
+  // Pagination controls
+  $("#previousPage").click(() => {
+    currentPage--;
+    getProducts(currentPage, itemsPerPage);
+  });
+
+  $("#nextPage").click(() => {
+    currentPage++;
+    getProducts(currentPage, itemsPerPage);
+  });
+
+  $("#itemsPerPage").on("change", function (e) {
+    itemsPerPage = $("#itemsPerPage").val();
+
+    console.log({ itemsPerPage });
+    getProducts(currentPage, itemsPerPage);
+  });
+
+  async function addProductToStore(item, product_storeeo_id, store_price) {
     $.ajax({
       type: "POST",
       url: ajax_call.add_product_to_store,
       data: {
-        product: product,
+        product_storeeo_id: product_storeeo_id,
         store_price: store_price,
       },
       success: function (response) {
@@ -86,4 +115,52 @@ jQuery(document).ready(async function ($) {
       },
     });
   }
+
+  // add filters
+
+  $(".filters").append(`
+  
+
+
+    <!-- Search input -->
+    <input type="text" id="product_search" placeholder="Search Products">
+
+    <!-- Dropdown of Categories -->
+    <select id="product_category">
+        <option value="">All Categories</option>
+        <option value="1">Category 1</option>
+        <option value="2">Category 2</option>
+        <option value="3">Category 3</option>
+    </select>
+
+
+   
+    <!-- Select for Country -->
+    <select id="country_select">
+       <option value="">All Countries</option>
+        <option value="israel">Israel</option>
+        <option value="usa">United States</option>
+    </select>
+    
+    <!-- Price Range Slider -->
+    <div id="slider" class="slider"></div>
+
+    `);
+
+  setTimeout(() => {
+    $(document)
+      .find("#slider")
+      .slider({
+        range: true, // Enable range
+        min: 0, // Minimum value
+        max: 1000, // Maximum value
+        step: 100, // Step size
+        values: [0, 1000], // Initial values
+        slide: function (event, ui) {
+          // Update the input fields or perform other actions as needed
+          $("#minValue").val(ui.values[0]);
+          $("#maxValue").val(ui.values[1]);
+        },
+      });
+  }, 200);
 });

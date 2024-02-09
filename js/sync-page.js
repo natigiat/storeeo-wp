@@ -20,7 +20,7 @@ jQuery(document).ready(function ($) {
         "<div class='error'>Your regular price must be greater than suppliers price</div>"
       );
     } else {
-      addProduct(element);
+      addProduct(element, storeeo_price);
     }
   });
 
@@ -87,6 +87,7 @@ jQuery(document).ready(function ($) {
       url: ajax_call.add_product_to_storeeo,
       data: {
         product_store_id: product_store_id,
+        storeeo_price: storeeo_price,
       },
       success: function (response) {
         const storeeo_sync_id = Number(response);

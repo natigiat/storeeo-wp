@@ -1,4 +1,5 @@
 const API = "http://localhost:3001";
+// const API = "https://api.storeeo.com";
 
 function getCookieValue(cookieName) {
   const cookies = document.cookie.split("; ");
@@ -84,7 +85,7 @@ async function updateRecord(id, data, auth = true) {
 // Function to get a record by ID
 async function getRecord(route, id = null, auth = true) {
   try {
-    const url = id ? `${API}/${route}/${id}` : `${API}/${route}/`;
+    const url = id ? `${API}/${route}/${id}` : `${API}/${route}`;
     const method = "GET";
     return await fetchData(url, method, null, auth);
   } catch (error) {

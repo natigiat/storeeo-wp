@@ -155,9 +155,15 @@ class Storeeo_Main_Table extends WP_List_Table {
     private function usort_reorder($a, $b) {
         $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'name';
         $order   = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc';
-
-        $result = strcmp($a[$orderby], $b[$orderby]);
-
+    
+        if ($orderby === 'last_update') {
+            // Sort by last update timestamp
+            $result = strtotime($b['last_update']) - strtotime($a['last_update']);
+        } else {
+            // Sort by other fields
+            $result = strcmp($a[$orderby], $b[$orderby]);
+        }
+    
         return ($order === 'asc') ? $result : -$result;
     }
 

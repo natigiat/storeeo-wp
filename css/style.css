@@ -75,14 +75,16 @@ td.sync.column-sync {
 /* Add your CSS styles for grid layout here */
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     grid-gap: 20px;
+    direction: ltr;
+    flex-direction: column;
 }
 
 .grid-item {
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    background: #Fff;
 }
 
 
@@ -265,9 +267,121 @@ td.profit {
     font-weight: 700;
 }
 
+#slider {
+    width: 80%;
+    max-width: 210px;
+    margin-top: 9px;
+}
+
+.ui-slider-range {
+    background: #eeb33e; /* Background color for the bar */
+}
+
+.filters {
+    display: flex;
+    height: 16px;
+    gap: 13px;
+}
+
+.ui-state-active {
+    background: #6e67678f!important;
+    border-color: #6e67678f!important;
+}
+#paginationControls {
+    display: flex;
+    gap: 10px;
+    direction: ltr;
+}
+
+input#itemsPerPage {
+    width: 49px;
+}
+
+#paginationControls label {
+    line-height: 2;
+}
 
 td.flex.order-products {
     gap: 8px;
+}
+
+.flex-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background: #1d2327;
+    direction: ltr;
+}
+.flex {
+    display: flex;
+}
+
+.buttons .item {
+    color: #fff;
+}
+
+.flex.glex-charts {
+    gap: 20px;
+}
+
+.flex .grid-item {
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    gap: 18px;
+    margin-top: 17px;
+    margin-left: 38px;
+}
+
+#myChart {
+    width: 100%;
+    height: 100px;
+}
+
+#totalSales , #yourProfit{
+    width: 100%;
+    height: 200px;
+}
+
+.table-order th , .table-order td {
+    padding: 5px;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.width-50 {
+    width: 50%!important;
+}
+
+.gap20{
+    gap: 20px;
+}
+
+.box {
+    width: 35%;
+    background: #fff;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.box .label {
+    text-align: left;
+    font-size: 14px;
+}
+
+.box .item-value {
+    font-size: 29px;
+    margin-top: 26px;
+    font-weight: 600;
+}
+
+.buttons .item.active {
+    border-bottom: 3px solid #eeb33e;
 }
 @keyframes pulse {
 	0% {
